@@ -2,7 +2,7 @@
 // Edit THIS ONE file per customer
 
 window.BIZ = {
-  tier: "elite", // "starter" | "pro" | "elite"
+  tier: "starter", // "starter" | "pro" | "elite"
 
   fullName: "🔥 CONFIG WORKS 🔥",
   title: "REPLACE_TITLE",
