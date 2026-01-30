@@ -944,6 +944,35 @@ document.getElementById("qrHint").style.display = isPro ? "block" : "none";
   if (qrBtn) qrBtn.disabled = true;
   if (qrDownloadBtn) qrDownloadBtn.disabled = true;
   }
+
+  // ===============================
+// APPLY TIER FEATURES TO UI
+// ===============================
+function applyTierUI(tier){
+  const t = (tier || "starter").toLowerCase();
+  const features = TIER_FEATURES[t] || TIER_FEATURES.starter;
+
+  // Helper: show/hide safely
+  const show = (el, on) => { if (el) el.style.display = on ? "" : "none"; };
+
+  // Hide/show top chip + tier badge text (if you have these elements)
+  try{
+    if (typeof setTierBadges === "function") setTierBadges(t);
+  }catch(e){}
+
+  // Booking
+  show(document.getElementById("bookingBtn"), features.booking);
+
+  // QR Buttons
+  show(document.getElementById("qrBtn"), features.qr);
+  show(document.getElementById("qrDownloadBtn"), features.qrDownload);
+
+  // Save Contact (starter still true per your matrix)
+  show(document.getElementById("saveContactBtn"), features.saveContact);
+
+  // Elite-only CTA
+  show(document.getElementById("eliteCtaBtn"), features.eliteCTA);
+}
   
   // Elite-only CTA injection (differentiation)
   if (isElite){
