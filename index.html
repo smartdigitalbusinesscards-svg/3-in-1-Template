@@ -825,35 +825,35 @@
 <script>
   // ============================================================
   //  TIER CONTROL — ONE TEMPLATE FOR PRO + ELITE
-  // ============================================================
-  /* === CUSTOMER_CONFIG_START === */
+  /* ============================================================
+   CUSTOMER CONFIG — EDIT ONLY THIS BLOCK PER CLIENT
+   ============================================================ */
 
 const TIER = "starter"; // "starter" | "pro" | "elite"
 
-// Identity
-const FULL_NAME = "REPLACE_FULL_NAME";
-const COMPANY   = "REPLACE_COMPANY";
-const TAGLINE   = "REPLACE_TAGLINE";
-const TITLE     = "REPLACE_TITLE";
+const FULL_NAME    = "REPLACE_FULL_NAME";
+const COMPANY      = "REPLACE_COMPANY";
+const TAGLINE      = "REPLACE_TAGLINE";
+const TITLE        = "REPLACE_TITLE";
 
-// Contact
-const PHONE_PRETTY = "REPLACE_PHONE_PRETTY"; // (209) 555-1234
-const PHONE_TEL    = "REPLACE_PHONE_TEL";    // 2095551234
+const PHONE_PRETTY = "REPLACE_PHONE_PRETTY";
+const PHONE_TEL    = "REPLACE_PHONE_TEL"; // digits only
 const EMAIL        = "REPLACE_EMAIL";
 const WEBSITE      = "REPLACE_WEBSITE";
-
-// Booking (Pro+ only)
 const BOOKING_LINK = "REPLACE_BOOKING_LINK";
 
-// Messaging
 const TEXT_PREFILL = "REPLACE_TEXT_PREFILL";
 
-// Elite-only CTA
+// Elite-only CTA (Elite differentiator)
 const ELITE_CTA_LABEL = "REPLACE_ELITE_CTA_LABEL";
 const ELITE_CTA_URL   = "REPLACE_ELITE_CTA_URL";
 
-/* === CUSTOMER_CONFIG_END === */
-
+/* ============================================================
+   END CUSTOMER CONFIG — DO NOT EDIT BELOW THIS LINE
+   ============================================================ */
+// 🚫 DO NOT EDIT BELOW — TEMPLATE LOGIC
+// Changes below this line affect ALL customers
+  
   // Apply config
   document.title = `${FULL_NAME} | ${COMPANY}`;
   document.getElementById("fullName").textContent = FULL_NAME;
