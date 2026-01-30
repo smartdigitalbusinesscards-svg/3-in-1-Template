@@ -901,11 +901,40 @@ if (TIER === "starter"){
   chipMain.textContent = "Starter eCard";
   chipSub.textContent  = "Quick share";
 }
+  
+// ===============================
+// TIER FEATURE MATRIX
+// ===============================
+const TIER_FEATURES = {
+  starter: {
+    booking: false,
+    qr: false,
+    qrDownload: false,
+    saveContact: true,
+    eliteCTA: false
+  },
+  pro: {
+    booking: true,
+    qr: true,
+    qrDownload: true,
+    saveContact: true,
+    eliteCTA: false
+  },
+  elite: {
+    booking: true,
+    qr: true,
+    qrDownload: true,
+    saveContact: true,
+    eliteCTA: true
+  }
+};
 
+const FEATURES = TIER_FEATURES[TIER];
+  
   // Pro+ features (QR tools) only for Pro/Elite
-  const isPro = (TIER === "pro" || TIER === "elite");
-const isElite = (TIER === "elite");
-
+  const isPro = FEATURES.qr;
+const isElite = FEATURES.eliteCTA;
+  
 // Pro+ features (QR tools)
 document.getElementById("utilityRow").style.display = isPro ? "flex" : "none";
 document.getElementById("qrHint").style.display = isPro ? "block" : "none";
