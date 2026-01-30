@@ -832,8 +832,7 @@
    DO NOT MOVE OR RENAME VARIABLES
 ================================ */
 
-const TIER = "starter"; // "starter" | "pro" | "elite"
-
+const TIER = (window.BIZ && window.BIZ.tier) ? window.BIZ.tier : "starter";
 const FULL_NAME    = "REPLACE_FULL_NAME";
 const COMPANY      = "REPLACE_COMPANY";
 const TAGLINE      = "REPLACE_TAGLINE";
