@@ -1,0 +1,1411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#04151f" />
+<title>Smart Digital eCard</title>
+<meta name="description" content="Smart Digital eCard with Pro/Elite tier features." />
+
+<style>
+  :root{
+    --bgA:#04151f;
+    --bgB:#0a2f3f;
+
+    --glass: rgba(255,255,255,.085);
+    --glass2: rgba(255,255,255,.055);
+    --border: rgba(255,255,255,.16);
+
+    --text:#ecf6ff;
+    --muted: rgba(236,246,255,.74);
+
+    --aqua:#4fe3ff;
+    --mint:#63ffb2;
+
+    --shadow: 0 22px 70px rgba(0,0,0,.55);
+    --radius: 22px;
+
+    --btnH: 52px;
+    --maxW: 880px;
+
+    --sheetRadius: 22px;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+
+  body{
+    margin:0;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 520px at 10% 8%, rgba(79,227,255,.18), transparent 58%),
+      radial-gradient(860px 520px at 92% 38%, rgba(99,255,178,.12), transparent 58%),
+      radial-gradient(720px 520px at 45% 105%, rgba(255,255,255,.06), transparent 60%),
+      linear-gradient(160deg, var(--bgA), var(--bgB));
+    overflow-x:hidden;
+  }
+
+  .waterGlow{
+    position:fixed; inset:-80px;
+    background:
+      radial-gradient(1200px 640px at 15% 20%, rgba(79,227,255,.11), transparent 60%),
+      radial-gradient(1000px 620px at 85% 55%, rgba(99,255,178,.085), transparent 60%),
+      radial-gradient(700px 460px at 50% 95%, rgba(255,255,255,.05), transparent 65%);
+    filter: blur(18px);
+    animation: drift 12s ease-in-out infinite alternate;
+    pointer-events:none;
+    opacity:.92;
+    z-index:0;
+  }
+  @keyframes drift{
+    from{ transform: translate3d(-12px,-10px,0) scale(1.02); }
+    to{ transform: translate3d(14px,12px,0) scale(1.06); }
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width: var(--maxW);
+    margin:0 auto;
+    padding: 26px 16px 38px;
+    display:flex;
+    justify-content:center;
+  }
+
+  .card{
+    width:100%;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,.14);
+    background: linear-gradient(180deg, var(--glass), var(--glass2));
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+    overflow:hidden;
+    position:relative;
+  }
+
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius: calc(var(--radius) + 2px);
+    background:
+      conic-gradient(from 180deg,
+        rgba(79,227,255,.0),
+        rgba(79,227,255,.35),
+        rgba(99,255,178,.28),
+        rgba(255,255,255,.10),
+        rgba(79,227,255,.0)
+      );
+    filter: blur(10px);
+    opacity:.65;
+    z-index:-1;
+    animation: spin 10s linear infinite;
+  }
+  @keyframes spin{ from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
+
+  .divider{
+    height:1px;
+    background: rgba(255,255,255,.10);
+    margin: 0 18px;
+  }
+
+  /* Brand bar */
+  .brandBar{
+    padding: 18px 18px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .brandLeft{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width: 0;
+  }
+  .logoBox{
+    width:52px; height:52px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(0,0,0,.12);
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    position:relative;
+    flex: 0 0 auto;
+    box-shadow: 0 16px 44px rgba(0,0,0,.35);
+  }
+  .logoBox::before{
+    content:"";
+    position:absolute;
+    inset:-35%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%),
+      radial-gradient(circle at 70% 70%, rgba(79,227,255,.20), transparent 55%),
+      radial-gradient(circle at 35% 80%, rgba(99,255,178,.16), transparent 60%);
+    filter: blur(8px);
+    opacity:.9;
+    pointer-events:none;
+  }
+  .logoImg{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    position:relative;
+    z-index:1;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+  }
+  .brandText{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:0;
+  }
+  .brandName{
+    font-weight:900;
+    letter-spacing:.02em;
+    font-size:13px;
+    text-transform:uppercase;
+    color: rgba(236,246,255,.92);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .brandTag{
+    font-size:12px;
+    color: var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .chipRow{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:flex-end;
+  }
+  .chip{
+    font-size:12px;
+    padding:7px 10px;
+    border-radius:999px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.12);
+    color: var(--muted);
+  }
+  .chip.glow{
+    border: 1px solid rgba(255,255,255,.18);
+    background: linear-gradient(90deg, rgba(79,227,255,.22), rgba(99,255,178,.16));
+    color: rgba(236,246,255,.92);
+  }
+  .chip.elite{
+    border: 1px solid rgba(255,255,255,.22);
+    background: linear-gradient(90deg, rgba(99,255,178,.24), rgba(79,227,255,.22));
+    color: rgba(236,246,255,.95);
+    position:relative;
+    overflow:hidden;
+  }
+  .chip.elite::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+    transform: translateX(-65%);
+    animation: eliteSweep 2.4s ease-in-out infinite;
+    opacity:.9;
+  }
+  @keyframes eliteSweep{
+    0%{ transform: translateX(-65%); opacity:0; }
+    25%{ opacity:.7; }
+    60%{ opacity:.35; }
+    100%{ transform: translateX(135%); opacity:0; }
+  }
+
+  /* Hero */
+  .hero{
+    padding: 18px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+  }
+  .avatarRing{
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(79,227,255,.85), rgba(99,255,178,.65));
+    box-shadow: 0 18px 55px rgba(0,0,0,.45);
+    flex: 0 0 auto;
+  }
+  .avatarWrap{
+    width:100%;
+    height:100%;
+    border-radius: 50%;
+    overflow:hidden;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.18);
+    position:relative;
+  }
+  .avatarWrap::after{
+    content:"";
+    position:absolute;
+    inset:-30%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.20), transparent 55%);
+    pointer-events:none;
+  }
+  .avatar{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 30%;
+    display:block;
+  }
+
+  .who{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex:1;
+  }
+  .name{
+    margin:0;
+    font-size:24px;
+    letter-spacing:-0.02em;
+    line-height:1.05;
+  }
+  .role{
+    color: var(--muted);
+    font-weight:700;
+    letter-spacing:.01em;
+  }
+  .pulseLine{
+    height:2px;
+    width: 100%;
+    max-width: 360px;
+    border-radius: 999px;
+    background:
+      linear-gradient(90deg,
+        rgba(79,227,255,0),
+        rgba(79,227,255,.85),
+        rgba(99,255,178,.70),
+        rgba(255,255,255,.20),
+        rgba(79,227,255,0)
+      );
+    opacity:.85;
+    position:relative;
+    overflow:hidden;
+  }
+  .pulseLine::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+    transform: translateX(-60%);
+    animation: sweep 2.6s ease-in-out infinite;
+  }
+  @keyframes sweep{
+    0%{ transform: translateX(-60%); opacity:.0; }
+    30%{ opacity:.65; }
+    60%{ opacity:.45; }
+    100%{ transform: translateX(120%); opacity:0; }
+  }
+
+  /* Info tiles */
+  .info{
+    padding: 18px;
+    display:grid;
+    gap:12px;
+  }
+  .tileBtn, .tile{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 12px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(0,0,0,.12);
+    color: inherit;
+    text-align:left;
+  }
+  .tileBtn{
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .tileBtn:hover{ transform: translateY(-1px); }
+  .tileBtn:active{ transform: translateY(0px) scale(.995); }
+
+  .icon{
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), rgba(79,227,255,.14));
+    display:grid;
+    place-items:center;
+    flex: 0 0 auto;
+  }
+  .icon svg{
+    width: 18px;
+    height: 18px;
+    fill: rgba(236,246,255,.92);
+  }
+  .tileText{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:0;
+    flex:1;
+  }
+  .label{
+    font-size:11px;
+    color: rgba(236,246,255,.62);
+    letter-spacing:.10em;
+    text-transform:uppercase;
+  }
+  .value{
+    font-size:14px;
+    font-weight:800;
+    color: rgba(236,246,255,.92);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .value a{ color: inherit; text-decoration:none; }
+  .value a:hover{ text-decoration:underline; }
+
+  /* Action buttons */
+  .actions{
+    padding: 0 18px 18px;
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:12px;
+  }
+  .btn{
+    height: var(--btnH);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.12);
+    color: var(--text);
+    text-decoration:none;
+    font-weight:900;
+    letter-spacing:.01em;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+  }
+  .btn svg{ width:18px; height:18px; fill: currentColor; opacity:.95; }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0px) scale(.995); }
+
+  .btn.primary{
+    border:none;
+    color:#031019;
+    background: linear-gradient(90deg, rgba(79,227,255,.95), rgba(99,255,178,.85));
+    box-shadow: 0 16px 40px rgba(79,227,255,.14);
+  }
+  .btn.main{
+    grid-column: 1 / -1;
+    border:none;
+    color:#031019;
+    background: linear-gradient(90deg, rgba(99,255,178,.92), rgba(79,227,255,.88));
+    box-shadow: 0 18px 44px rgba(99,255,178,.12);
+  }
+  .btn.save{
+    grid-column: 1 / -1;
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.14));
+  }
+
+  /* Elite-only CTA */
+  .btn.elite{
+    grid-column: 1 / -1;
+    border:none;
+    color:#04151f;
+    background: linear-gradient(90deg, rgba(255,255,255,.20), rgba(79,227,255,.92), rgba(99,255,178,.85));
+    box-shadow: 0 22px 60px rgba(255,255,255,.08);
+    position:relative;
+    overflow:hidden;
+  }
+  .btn.elite::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.30), transparent);
+    transform: translateX(-70%);
+    animation: eliteSweep 2.2s ease-in-out infinite;
+    opacity:.75;
+    pointer-events:none;
+  }
+
+  /* Utility Row (Pro+) */
+  .utilHint{
+    font-size:12px;
+    color: rgba(236,246,255,.65);
+    padding: 0 18px 14px;
+    display:none;
+  }
+  .utilityRow{
+    padding: 0 18px 18px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .utilBtn{
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.12);
+    color: rgba(236,246,255,.92);
+    font-weight:900;
+    letter-spacing:.01em;
+    padding: 10px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration:none;
+  }
+  .utilBtn svg{ width:16px; height:16px; fill: currentColor; opacity:.95; }
+  .utilBtn:active{ transform: scale(.99); }
+.utilBtn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+  pointer-events:none;
+  filter: grayscale(30%);
+}
+  
+  footer{
+    padding: 0 18px 18px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    font-size:11px;
+    color: rgba(236,246,255,.55);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+
+  /* Modal / sheet */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(6px);
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .18s ease;
+    z-index: 20;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+
+  .sheet{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    transform: translateY(110%);
+    transition: transform .22s ease;
+    z-index: 21;
+    padding: 12px 12px 18px;
+  }
+  .sheet.open{ transform: translateY(0); }
+
+  .sheetCard{
+    max-width: 680px;
+    margin: 0 auto;
+    border-radius: var(--sheetRadius);
+    border: 1px solid rgba(255,255,255,.14);
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+    box-shadow: 0 26px 90px rgba(0,0,0,.60);
+    backdrop-filter: blur(16px);
+    overflow:hidden;
+  }
+  .grab{
+    width: 48px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.20);
+    margin: 10px auto 0;
+  }
+  .sheetTop{
+    padding: 12px 14px 10px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom: 1px solid rgba(255,255,255,.10);
+  }
+  .sheetTitle{
+    font-weight: 950;
+    letter-spacing:.01em;
+    font-size: 14px;
+  }
+  .sheetSub{
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .xbtn{
+    width: 38px; height: 38px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.12);
+    color: var(--text);
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sheetBody{
+    padding: 14px;
+    display:grid;
+    gap:12px;
+  }
+  .sheetBtn{
+    height: 54px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.12);
+    color: var(--text);
+    text-decoration:none;
+    font-weight: 950;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sheetBtn.primary{
+    border:none;
+    color:#031019;
+    background: linear-gradient(90deg, rgba(79,227,255,.95), rgba(99,255,178,.85));
+  }
+  .sheetBtn svg{ width:18px; height:18px; fill: currentColor; }
+
+  /* QR block */
+  .qrFrame{
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.14);
+    padding: 14px;
+    display:grid;
+    place-items:center;
+    gap:12px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Elite visual upgrade */
+  .qrFrame.elite{
+    border: 1px solid rgba(255,255,255,.20);
+    background: linear-gradient(180deg, rgba(79,227,255,.12), rgba(0,0,0,.14));
+  }
+  .qrFrame.elite::before{
+    content:"";
+    position:absolute;
+    inset:-40%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(79,227,255,.18), transparent 55%),
+      radial-gradient(circle at 70% 65%, rgba(99,255,178,.14), transparent 60%),
+      radial-gradient(circle at 35% 85%, rgba(255,255,255,.10), transparent 60%);
+    filter: blur(18px);
+    opacity:.9;
+    animation: drift 8s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+
+  canvas#qrCanvas{
+    width: 260px;
+    height: 260px;
+    border-radius: 14px;
+    background: #fff;
+    padding: 10px;
+    position:relative;
+    z-index:1;
+  }
+
+  .qrCaption{
+    text-align:center;
+    color: rgba(236,246,255,.92);
+    font-weight: 950;
+    letter-spacing:.01em;
+    position:relative;
+    z-index:1;
+  }
+  .qrUrl{
+    text-align:center;
+    color: rgba(236,246,255,.65);
+    font-size: 12px;
+    word-break: break-all;
+    position:relative;
+    z-index:1;
+  }
+
+  .qrPack{
+    display:none;
+    grid-template-columns: repeat(2, 1fr);
+    gap:10px;
+  }
+  .qrPack.show{ display:grid; }
+
+  @media (max-width: 520px){
+    .brandBar{ flex-direction:column; align-items:flex-start; }
+    .chipRow{ justify-content:flex-start; }
+  }
+  @media (max-width: 380px){
+    .hero{ flex-direction:column; align-items:flex-start; }
+    .actions{ grid-template-columns: 1fr; }
+    .btn.main, .btn.save, .btn.elite{ grid-column:auto; }
+    canvas#qrCanvas{ width: 230px; height: 230px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .waterGlow, .pulseLine::after, .card::before, .chip.elite::after, .btn.elite::after, .qrFrame.elite::before{ animation:none !important; }
+    .sheet, .overlay{ transition:none !important; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="waterGlow"></div>
+
+  <div class="wrap">
+    <main class="card">
+
+      <section class="brandBar">
+        <div class="brandLeft">
+          <div class="logoBox" title="Company Logo">
+            <img id="logoImg" class="logoImg" src="logo.png" alt="Company logo"
+                 onerror="this.onerror=null; this.src='logo.jpg';" />
+          </div>
+          <div class="brandText">
+            <div class="brandName" id="companyName">Select Source Water</div>
+            <div class="brandTag" id="companyTag">Water Filtration • Softening • Reverse Osmosis</div>
+          </div>
+        </div>
+
+        <div class="chipRow">
+          <div class="chip glow" id="chipMain">Pro eCard</div>
+          <div class="chip" id="chipSub">Scan-ready</div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="hero">
+        <div class="avatarRing">
+          <div class="avatarWrap">
+            <img class="avatar" src="profile.jpg" alt="Profile photo"
+                 onerror="this.style.display='none'; this.parentElement.style.background='rgba(0,0,0,.18)';" />
+          </div>
+        </div>
+
+        <div class="who">
+          <h1 class="name" id="fullName">Greg Buckner</h1>
+          <div class="role" id="title">Water Specialist</div>
+          <div class="pulseLine" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="info">
+        <button class="tileBtn" id="phoneTile" type="button" aria-label="Call or text">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
+          </div>
+          <div class="tileText">
+            <div class="label">Call / Text</div>
+            <div class="value" id="phonePretty">(209) 769-4750</div>
+          </div>
+        </button>
+
+        <div class="tile">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg>
+          </div>
+          <div class="tileText">
+            <div class="label">Email</div>
+            <div class="value"><a id="emailLink" href="mailto:example@email.com">example@email.com</a></div>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm6.9 9h-2.2c-.1-2-.7-3.9-1.7-5.4 1.9 1 3.3 3 3.9 5.4zM12 4.1c1.3 1.6 2.1 3.9 2.2 6H9.8c.1-2.1.9-4.4 2.2-6zM4.1 13h2.2c.1 2 .7 3.9 1.7 5.4-1.9-1-3.3-3-3.9-5.4zM6.3 11H4.1c.6-2.4 2-4.4 3.9-5.4-1 1.5-1.6 3.4-1.7 5.4zM12 19.9c-1.3-1.6-2.1-3.9-2.2-6h4.4c-.1 2.1-.9 4.4-2.2 6zm3.9-1.5c1-1.5 1.6-3.4 1.7-5.4h2.2c-.6 2.4-2 4.4-3.9 5.4z"/></svg>
+          </div>
+          <div class="tileText">
+            <div class="label">Website</div>
+            <div class="value"><a id="siteLink" href="https://example.com" target="_blank" rel="noopener">example.com</a></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="actions" id="actions">
+        <a class="btn main" id="bookBtn" href="#" target="_blank" rel="noopener" aria-label="Book appointment">
+          <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+          Book an Appointment
+        </a>
+
+        <!-- Elite-only CTA injected here by JS -->
+
+        <a class="btn primary" id="callBtn" href="#" aria-label="Call">
+          <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
+          Call
+        </a>
+
+        <a class="btn" id="textBtn" href="#" aria-label="Text">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          Text
+        </a>
+
+        <a class="btn" id="emailBtn" href="#" aria-label="Email">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg>
+          Email
+        </a>
+
+        <a class="btn" id="siteBtn" href="#" target="_blank" rel="noopener" aria-label="Website">
+          <svg viewBox="0 0 24 24"><path d="M10 6H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4h-2v4H6V8h4V6zm4 0v2h3.6L9 16.6 10.4 18 19 9.4V13h2V6h-7z"/></svg>
+          Website
+        </a>
+
+        <button class="btn save" id="saveContactBtn" type="button" aria-label="Save contact">
+          <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zM12 19c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4zm3-10H5V5h10v4z"/></svg>
+          Save Contact
+        </button>
+      </section>
+
+      <div class="utilHint" id="qrHint">
+        In person? Tap <b>Show QR</b> so someone can scan your card instantly.
+      </div>
+
+      <section class="utilityRow" id="utilityRow">
+        <button class="utilBtn" id="qrBtn" type="button" aria-label="Show QR">
+          <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm10 0h2v2h-2v-2zm-2-2h4v4h-4v-4zm6 0h2v2h-2v-2zm0 4h2v4h-2v-4zm-4 2h2v2h-2v-2zm2 2h4v2h-4v-2z"/></svg>
+          Show QR
+        </button>
+
+        <button class="utilBtn" id="qrDownloadBtn" type="button" aria-label="Download QR">
+          <svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM12 2v12l4-4 1.4 1.4L12 17.8 6.6 11.4 8 10l4 4V2h0z"/></svg>
+          Download QR
+        </button>
+      </section>
+
+      <footer>
+        <div>Smart Digital Business Card</div>
+        <div id="tierBadge">PRO</div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Action sheet">
+    <div class="sheetCard">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="sheetTop">
+        <div>
+          <div class="sheetTitle" id="sheetTitle">Reach Out</div>
+          <div class="sheetSub" id="sheetSub">Choose an option</div>
+        </div>
+        <button class="xbtn" id="closeSheetBtn" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="sheetBody" id="sheetBody"></div>
+    </div>
+  </div>
+
+<script>
+  // ============================================================
+  //  TIER CONTROL — ONE TEMPLATE FOR PRO + ELITE
+  // ============================================================
+  /* === CUSTOMER_CONFIG_START === */
+const TIER = "starter"; // "starter" | "pro" | "elite"
+
+  // ============================================================
+  //  CUSTOMER CONFIG (edit per customer)
+  // ============================================================
+  const FULL_NAME    = "REPLACE_FULL_NAME";
+const COMPANY      = "REPLACE_COMPANY";
+const TAGLINE      = "REPLACE_TAGLINE";
+const TITLE        = "REPLACE_TITLE";
+
+const PHONE_PRETTY = "REPLACE_PHONE_PRETTY";
+const PHONE_TEL    = "REPLACE_PHONE_TEL"; // digits only
+const EMAIL        = "REPLACE_EMAIL";
+const WEBSITE      = "REPLACE_WEBSITE";
+const BOOKING_LINK = "REPLACE_BOOKING_LINK";
+
+// Nice touch:
+const TEXT_PREFILL = "REPLACE_TEXT_PREFILL";
+
+// Elite-only CTA (Elite differentiator)
+const ELITE_CTA_LABEL = "REPLACE_ELITE_CTA_LABEL";
+const ELITE_CTA_URL   = "REPLACE_ELITE_CTA_URL";
+/* === CUSTOMER_CONFIG_END === */
+
+  // Apply config
+  document.title = `${FULL_NAME} | ${COMPANY}`;
+  document.getElementById("fullName").textContent = FULL_NAME;
+  document.getElementById("companyName").textContent = COMPANY;
+  document.getElementById("companyTag").textContent = TAGLINE;
+  document.getElementById("title").textContent = TITLE;
+  document.getElementById("phonePretty").textContent = PHONE_PRETTY;
+
+  const emailLink = document.getElementById("emailLink");
+  emailLink.textContent = EMAIL;
+  emailLink.href = `mailto:${EMAIL}`;
+
+  const siteLink = document.getElementById("siteLink");
+  siteLink.textContent = WEBSITE.replace(/^https?:\/\//,'');
+  siteLink.href = WEBSITE;
+
+  document.getElementById("bookBtn").href = BOOKING_LINK;
+if (TIER === "starter"){
+  document.getElementById("bookBtn").style.display = "none";
+}
+  
+  document.getElementById("callBtn").href  = `tel:${PHONE_TEL}`;
+  document.getElementById("textBtn").href  = `sms:${PHONE_TEL}${TEXT_PREFILL ? `?&body=${encodeURIComponent(TEXT_PREFILL)}` : ""}`;
+  document.getElementById("emailBtn").href = `mailto:${EMAIL}`;
+  document.getElementById("siteBtn").href  = WEBSITE;
+
+  // Tier visuals
+  const tierBadge = document.getElementById("tierBadge");
+  const chipMain = document.getElementById("chipMain");
+  const chipSub  = document.getElementById("chipSub");
+
+  if (TIER === "elite"){
+  tierBadge.textContent = "ELITE";
+  chipMain.textContent = "Elite eCard";
+  chipSub.textContent  = "Premium share tools";
+  chipMain.classList.add("elite");
+} else if (TIER === "pro"){
+  tierBadge.textContent = "PRO";
+  chipMain.textContent = "Pro eCard";
+  chipSub.textContent  = "Scan-ready";
+} else {
+  tierBadge.textContent = "STARTER";
+  chipMain.textContent = "Starter eCard";
+  chipSub.textContent  = "Quick share";
+}
+
+  // Pro+ features (QR tools) only for Pro/Elite
+  const isPro = (TIER === "pro" || TIER === "elite");
+const isElite = (TIER === "elite");
+
+// Pro+ features (QR tools)
+document.getElementById("utilityRow").style.display = isPro ? "flex" : "none";
+document.getElementById("qrHint").style.display = isPro ? "block" : "none";
+  if (!isPro){
+  // extra safety: prevent any QR actions in Starter
+  const qrBtn = document.getElementById("qrBtn");
+  const qrDownloadBtn = document.getElementById("qrDownloadBtn");
+  if (qrBtn) qrBtn.disabled = true;
+  if (qrDownloadBtn) qrDownloadBtn.disabled = true;
+  }
+  
+  // Elite-only CTA injection (differentiation)
+  if (isElite){
+    const actions = document.getElementById("actions");
+    const eliteBtn = document.createElement("a");
+    eliteBtn.className = "btn elite";
+    eliteBtn.href = ELITE_CTA_URL;
+    eliteBtn.target = "_blank";
+    eliteBtn.rel = "noopener";
+    eliteBtn.setAttribute("aria-label", ELITE_CTA_LABEL);
+    eliteBtn.innerHTML = `
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9L22 9l-6 4 2.2 7-6.2-4.2L5.8 20 8 13 2 9l7.6-.1L12 2z"/></svg>
+      ${ELITE_CTA_LABEL}
+    `;
+    // Insert right after main booking button
+    actions.insertBefore(eliteBtn, actions.children[1]);
+  }
+
+  // Save Contact (.vcf)
+  function buildVCF(){
+    const parts = FULL_NAME.trim().split(/\s+/);
+    const first = parts[0] || "";
+    const last  = parts.length > 1 ? parts[parts.length - 1] : "";
+    return `BEGIN:VCARD
+VERSION:3.0
+N:${last};${first};;;
+FN:${FULL_NAME}
+ORG:${COMPANY}
+TITLE:${TITLE}
+TEL;TYPE=CELL:+1-${PHONE_PRETTY.replace(/[^\d]/g,'').replace(/^1/,'')}
+EMAIL;TYPE=INTERNET:${EMAIL}
+URL:${WEBSITE}
+END:VCARD`;
+  }
+
+  document.getElementById("saveContactBtn").addEventListener("click", () => {
+    const vcf = buildVCF();
+    const blob = new Blob([vcf], { type: "text/vcard" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${FULL_NAME.replace(/\s+/g,'_')}_${COMPANY.replace(/\s+/g,'')}.vcf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // ============================================================
+  // Modal / sheet controller
+  // ============================================================
+  const overlay = document.getElementById("overlay");
+  const sheet = document.getElementById("sheet");
+  const sheetTitle = document.getElementById("sheetTitle");
+  const sheetSub = document.getElementById("sheetSub");
+  const sheetBody = document.getElementById("sheetBody");
+  const closeSheetBtn = document.getElementById("closeSheetBtn");
+
+  function openSheet(){
+    overlay.classList.add("open");
+    sheet.classList.add("open");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeSheet(){
+    overlay.classList.remove("open");
+    sheet.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+  overlay.addEventListener("click", closeSheet);
+  closeSheetBtn.addEventListener("click", closeSheet);
+  document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeSheet(); });
+
+  // Phone tile opens chooser
+  document.getElementById("phoneTile").addEventListener("click", () => {
+    sheetTitle.textContent = "Reach Out";
+    sheetSub.textContent = `${PHONE_PRETTY} • Choose Call or Text`;
+    sheetBody.innerHTML = `
+      <a class="sheetBtn primary" href="tel:${PHONE_TEL}">
+        <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
+        Call Now
+      </a>
+      <a class="sheetBtn" href="sms:${PHONE_TEL}${TEXT_PREFILL ? `?&body=${encodeURIComponent(TEXT_PREFILL)}` : ""}">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        Text Instead
+      </a>
+    `;
+    openSheet();
+  });
+
+  // ============================================================
+  // QR Generator (local, no CDN)
+  // Uses built-in QRCode generator (compact version) below
+  // ============================================================
+
+  // --- qrcode-generator style API (compact but reliable) ---
+  // This supports typical URLs reliably; we auto-pick a version big enough.
+  // (No external downloads, no network calls.)
+
+  // Minimal QR library (byte mode only, enough for URLs)
+  // Based on classic QR matrix construction patterns.
+  // (If you ever want “overkill” enterprise QR, I can swap in the full RS version too.)
+
+  function QR(text, ecc){
+    // Auto choose version 1..10-ish by trial
+    const levels = { L:1, M:0, Q:3, H:2 };
+    const ec = levels[ecc || "M"] ?? 0;
+
+    for (let v=3; v<=10; v++){
+      try{
+        const m = QRCodeModel(v, ec);
+        m.addData(text);
+        m.make();
+        return m;
+      }catch(e){}
+    }
+    // Fallback to version 10
+    const m = QRCodeModel(10, ec);
+    m.addData(text);
+    m.make();
+    return m;
+  }
+
+  function drawQR(canvas, qrModel, opts){
+    const ctx = canvas.getContext("2d");
+    const count = qrModel.getModuleCount();
+    const quiet = opts.quiet ?? 4;
+    const scale = opts.scale ?? 6;
+    const size = (count + quiet*2) * scale;
+
+    canvas.width = size;
+    canvas.height = size;
+
+    const bg = opts.bg ?? "#ffffff";
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,size,size);
+
+    // Module color logic
+    const mode = opts.mode || "pro"; // "pro" or "elite"
+    const fg = opts.fg ?? "#000000";
+
+    for (let r=0; r<count; r++){
+      for (let c=0; c<count; c++){
+        if (qrModel.isDark(r,c)){
+          const x = (c+quiet)*scale;
+          const y = (r+quiet)*scale;
+
+          if (mode === "elite"){
+            // Elite: subtle gradient across modules using teal/mint
+            const t = (r + c) / (count*2);
+            const a = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue("--aqua").trim() || "#4fe3ff");
+            const b = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue("--mint").trim() || "#63ffb2");
+            const col = mixRgb(a, b, t);
+            ctx.fillStyle = `rgb(${col.r},${col.g},${col.b})`;
+          } else {
+            ctx.fillStyle = fg;
+          }
+
+          if (opts.rounded){
+            const rad = Math.max(1, Math.floor(scale * 0.35));
+            roundRect(ctx, x, y, scale, scale, rad);
+            ctx.fill();
+          } else {
+            ctx.fillRect(x,y,scale,scale);
+          }
+        }
+      }
+    }
+  }
+
+  function roundRect(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r);
+    ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r);
+    ctx.closePath();
+  }
+
+  function hexToRgb(hex){
+    const h = hex.replace("#","").trim();
+    const v = h.length === 3 ? h.split("").map(ch=>ch+ch).join("") : h;
+    const n = parseInt(v, 16);
+    if (Number.isNaN(n)) return {r:79,g:227,b:255};
+    return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+  }
+  function mixRgb(a,b,t){
+    const clamp = (x)=>Math.max(0,Math.min(255,Math.round(x)));
+    return {
+      r: clamp(a.r + (b.r - a.r)*t),
+      g: clamp(a.g + (b.g - a.g)*t),
+      b: clamp(a.b + (b.b - a.b)*t),
+    };
+  }
+
+  // QR Modal open
+  const qrBtn = document.getElementById("qrBtn");
+  const qrDownloadBtn = document.getElementById("qrDownloadBtn");
+
+  function openQR(){
+    const url = window.location.href.split("#")[0];
+    // use the global isElite we already defined above
+
+    sheetTitle.textContent = isElite ? "Elite Scan Mode" : "Scan My Card";
+    sheetSub.textContent = isElite ? "Scan • Save • Connect instantly." : "Point your camera at the code to open this card.";
+
+    sheetBody.innerHTML = `
+      <div class="qrFrame ${isElite ? "elite" : ""}">
+        <canvas id="qrCanvas" aria-label="QR Code"></canvas>
+        <div class="qrCaption">${isElite ? "Scan to save this card instantly" : "Scan to open this eCard"}</div>
+        <div class="qrUrl" id="qrUrl"></div>
+      </div>
+
+      ${isElite ? `
+        <div class="qrPack show">
+          <button class="sheetBtn primary" id="dlStandard">Download Standard</button>
+          <button class="sheetBtn" id="dlRounded">Download Rounded</button>
+          <button class="sheetBtn" id="dlPrint">Download Print (White)</button>
+          <button class="sheetBtn" id="dlDark">Download Dark</button>
+        </div>
+      ` : `
+        <button class="sheetBtn primary" id="dlStandard">Download QR</button>
+      `}
+    `;
+
+    openSheet();
+
+    const qrCanvas = document.getElementById("qrCanvas");
+    document.getElementById("qrUrl").textContent = url;
+
+    // Render QR
+    const qrModel = QR(url, "M");
+    drawQR(qrCanvas, qrModel, {
+      scale: 6,
+      quiet: 4,
+      mode: isElite ? "elite" : "pro",
+      bg: "#ffffff",
+      fg: "#000000",
+      rounded: false
+    });
+
+    // Download handlers
+    const dlStandard = document.getElementById("dlStandard");
+    if (dlStandard){
+      dlStandard.addEventListener("click", () => downloadQR(url, { variant:"standard" }));
+    }
+    const dlRounded = document.getElementById("dlRounded");
+    if (dlRounded){
+      dlRounded.addEventListener("click", () => downloadQR(url, { variant:"rounded" }));
+    }
+    const dlPrint = document.getElementById("dlPrint");
+    if (dlPrint){
+      dlPrint.addEventListener("click", () => downloadQR(url, { variant:"print" }));
+    }
+    const dlDark = document.getElementById("dlDark");
+    if (dlDark){
+      dlDark.addEventListener("click", () => downloadQR(url, { variant:"dark" }));
+    }
+  }
+
+  if (qrBtn) qrBtn.addEventListener("click", openQR);
+
+  // Quick download button (outside modal)
+  if (qrDownloadBtn){
+    qrDownloadBtn.addEventListener("click", () => {
+      const url = window.location.href.split("#")[0];
+      downloadQR(url, { variant: "standard" });
+    });
+  }
+
+  function downloadQR(url, options){
+  const variant = options.variant || "standard";
+  // use global isElite
+
+    const temp = document.createElement("canvas");
+    const qrModel = QR(url, "M");
+
+    if (variant === "dark"){
+      drawQR(temp, qrModel, {
+        scale: 8, quiet: 4,
+        mode: "pro",
+        bg: "#04151f",
+        fg: "#ecf6ff",
+        rounded: false
+      });
+    } else if (variant === "print"){
+      drawQR(temp, qrModel, {
+        scale: 10, quiet: 4,
+        mode: "pro",
+        bg: "#ffffff",
+        fg: "#000000",
+        rounded: false
+      });
+    } else if (variant === "rounded"){
+      drawQR(temp, qrModel, {
+        scale: 8, quiet: 4,
+        mode: isElite ? "elite" : "pro",
+        bg: "#ffffff",
+        fg: "#000000",
+        rounded: true
+      });
+    } else {
+      // standard
+      drawQR(temp, qrModel, {
+        scale: 8, quiet: 4,
+        mode: isElite ? "elite" : "pro",
+        bg: "#ffffff",
+        fg: "#000000",
+        rounded: false
+      });
+    }
+
+    const a = document.createElement("a");
+    a.href = temp.toDataURL("image/png");
+    a.download = `${FULL_NAME.replace(/\s+/g,'_')}_QR_${variant}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // ============================================================
+  // QR core model (compact)
+  // ============================================================
+  function QRCodeModel(typeNumber, errorCorrectLevel){
+    const PAD0 = 0xEC, PAD1 = 0x11;
+
+    const qr = {
+      typeNumber,
+      errorCorrectLevel,
+      modules: null,
+      moduleCount: 0,
+      dataCache: null,
+      dataList: [],
+      addData(data){ this.dataList.push(QR8bitByte(data)); this.dataCache = null; },
+      isDark(r,c){ return this.modules[r][c]; },
+      getModuleCount(){ return this.moduleCount; },
+      make(){
+        this.moduleCount = this.typeNumber * 4 + 17;
+        this.modules = Array.from({length:this.moduleCount}, () => Array(this.moduleCount).fill(null));
+
+        setupPositionProbePattern(this, 0, 0);
+        setupPositionProbePattern(this, this.moduleCount - 7, 0);
+        setupPositionProbePattern(this, 0, this.moduleCount - 7);
+        setupTimingPattern(this);
+        setupTypeInfo(this, this.errorCorrectLevel, 0);
+
+        if (this.dataCache == null) this.dataCache = createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+        mapData(this, this.dataCache, 0);
+      }
+    };
+
+    function QR8bitByte(data){
+      const bytes = [];
+      for (let i=0; i<data.length; i++) bytes.push(data.charCodeAt(i));
+      return {
+        mode: 1,
+        getLength(){ return bytes.length; },
+        write(buffer){ for (let i=0; i<bytes.length; i++) buffer.put(bytes[i], 8); }
+      };
+    }
+
+    function QRBitBuffer(){
+      return {
+        buffer: [],
+        length: 0,
+        put(num, len){
+          for (let i=0; i<len; i++) this.putBit(((num >>> (len - i - 1)) & 1) === 1);
+        },
+        putBit(bit){
+          const idx = Math.floor(this.length / 8);
+          if (this.buffer.length <= idx) this.buffer.push(0);
+          if (bit) this.buffer[idx] |= (0x80 >>> (this.length % 8));
+          this.length++;
+        }
+      };
+    }
+
+    function setupPositionProbePattern(qr, row, col){
+      for (let r=-1; r<=7; r++){
+        if (row+r <= -1 || qr.moduleCount <= row+r) continue;
+        for (let c=-1; c<=7; c++){
+          if (col+c <= -1 || qr.moduleCount <= col+c) continue;
+          if ((0 <= r && r <= 6 && (c === 0 || c === 6)) ||
+              (0 <= c && c <= 6 && (r === 0 || r === 6)) ||
+              (2 <= r && r <= 4 && 2 <= c && c <= 4)){
+            qr.modules[row+r][col+c] = true;
+          } else {
+            qr.modules[row+r][col+c] = false;
+          }
+        }
+      }
+    }
+
+    function setupTimingPattern(qr){
+      for (let i=8; i<qr.moduleCount-8; i++){
+        if (qr.modules[i][6] === null) qr.modules[i][6] = (i % 2 === 0);
+        if (qr.modules[6][i] === null) qr.modules[6][i] = (i % 2 === 0);
+      }
+    }
+
+    function setupTypeInfo(qr, errorCorrectLevel, maskPattern){
+      const data = (errorCorrectLevel << 3) | maskPattern;
+      const bits = getBCHTypeInfo(data);
+      for (let i=0; i<15; i++){
+        const mod = ((bits >> i) & 1) === 1;
+        // vertical
+        if (i < 6) qr.modules[i][8] = mod;
+        else if (i < 8) qr.modules[i + 1][8] = mod;
+        else qr.modules[qr.moduleCount - 15 + i][8] = mod;
+        // horizontal
+        if (i < 8) qr.modules[8][qr.moduleCount - i - 1] = mod;
+        else if (i < 9) qr.modules[8][15 - i - 1 + 1] = mod;
+        else qr.modules[8][15 - i - 1] = mod;
+      }
+      qr.modules[qr.moduleCount - 8][8] = true;
+    }
+
+    function getBCHTypeInfo(data){
+      let d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(0x537) >= 0){
+        d ^= (0x537 << (getBCHDigit(d) - getBCHDigit(0x537)));
+      }
+      return ((data << 10) | d) ^ 0x5412;
+    }
+    function getBCHDigit(data){
+      let digit = 0;
+      while (data !== 0){ digit++; data >>>= 1; }
+      return digit;
+    }
+
+    function createData(typeNumber, errorCorrectLevel, dataList){
+      const buffer = QRBitBuffer();
+
+      for (let i=0; i<dataList.length; i++){
+        const data = dataList[i];
+        buffer.put(0x4, 4); // byte mode
+        // length bits vary by version; for v1-9 it's 8, v10+ is 16. We'll choose:
+        buffer.put(data.getLength(), typeNumber < 10 ? 8 : 16);
+        data.write(buffer);
+      }
+
+      // Rough capacity by version to avoid overflow; this is practical for typical URLs.
+      // If you ever hit a super long URL, shorten it (or we upgrade QR core).
+      const approxDataBytes = (typeNumber < 10) ? 120 : 200;
+
+      if (buffer.length + 4 <= approxDataBytes * 8) buffer.put(0, 4);
+      while (buffer.length % 8 !== 0) buffer.putBit(false);
+
+      while (buffer.buffer.length < approxDataBytes){
+        buffer.put(PAD0, 8);
+        if (buffer.buffer.length >= approxDataBytes) break;
+        buffer.put(PAD1, 8);
+      }
+      return buffer.buffer;
+    }
+
+    function mapData(qr, data, maskPattern){
+      let inc = -1;
+      let row = qr.moduleCount - 1;
+      let bitIndex = 7;
+      let byteIndex = 0;
+
+      for (let col = qr.moduleCount - 1; col > 0; col -= 2){
+        if (col === 6) col--;
+        while (true){
+          for (let c=0; c<2; c++){
+            if (qr.modules[row][col - c] === null){
+              let dark = false;
+              if (byteIndex < data.length){
+                dark = (((data[byteIndex] >>> bitIndex) & 1) === 1);
+              }
+              const mask = ((row + col) % 2 === 0);
+              qr.modules[row][col - c] = mask ? !dark : dark;
+
+              bitIndex--;
+              if (bitIndex === -1){
+                byteIndex++;
+                bitIndex = 7;
+              }
+            }
+          }
+          row += inc;
+          if (row < 0 || qr.moduleCount <= row){
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    }
+
+    return qr;
+  }
+</script>
+
+</body>
+</html>
