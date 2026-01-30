@@ -4,7 +4,7 @@
 window.BIZ = {
   tier: "starter", // "starter" | "pro" | "elite"
 
-  fullName: "REPLACE_FULL_NAME",
+  fullName: "🔥 CONFIG WORKS 🔥",
   title: "REPLACE_TITLE",
   company: "REPLACE_COMPANY",
   brandLine: "REPLACE_TAGLINE",
