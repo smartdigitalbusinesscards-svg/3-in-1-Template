@@ -756,26 +756,35 @@
   </div>
 
   <!-- ============================================================
-       CUSTOMER CONFIG (EDIT ONLY THIS BLOCK PER CUSTOMER)
-       ============================================================ -->
-  <script>
-    window.CARD = {
-      fullName: "REPLACE_FULL_NAME",
-      company: "REPLACE_COMPANY",
-      tagline: "REPLACE_TAGLINE",
-      title: "REPLACE_TITLE",
+     CUSTOMER CONFIG (edit per customer)
+     ============================================================ -->
+<script>
+  // IMPORTANT:
+  // Put ALL customer values here so shared/shared.js can wire buttons correctly.
+  // Tier can still be overridden by URL (?tier=starter|pro|elite) via shared/config.js
 
-      phonePretty: "REPLACE_PHONE_PRETTY",
-      phoneTel: "REPLACE_PHONE_TEL", // digits only
-      email: "REPLACE_EMAIL",
-      website: "REPLACE_WEBSITE",
-      bookingLink: "REPLACE_BOOKING_LINK",
-      textPrefill: "REPLACE_TEXT_PREFILL",
+  window.BIZ = {
+    tier: "starter", // default tier (URL can override)
 
-      eliteCtaLabel: "REPLACE_ELITE_CTA_LABEL",
-      eliteCtaUrl: "REPLACE_ELITE_CTA_URL"
-    };
-  </script>
+    fullName: "REPLACE_FULL_NAME",
+    company: "REPLACE_COMPANY",
+    tagline: "REPLACE_TAGLINE",
+    title: "REPLACE_TITLE",
+
+    phonePretty: "REPLACE_PHONE_PRETTY",
+    phoneTel: "2095551234", // digits only, like 2095551234
+
+    email: "REPLACE_EMAIL",
+    website: "https://example.com", // include https://
+
+    bookingLink: "REPLACE_BOOKING_LINK", // include https:// (or leave "" if not used)
+
+    textPrefill: "REPLACE_TEXT_PREFILL",
+
+    eliteCtaLabel: "REPLACE_ELITE_CTA_LABEL",
+    eliteCtaUrl: "REPLACE_ELITE_CTA_URL"
+  };
+</script>
   
 <script>
   (function () {
