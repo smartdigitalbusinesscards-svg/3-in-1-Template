@@ -1,30 +1,24 @@
-// /shared/config.js
-// Edit THIS ONE file per customer
+// shared/config.js
+// Purpose: set a default tier & allow quick override via URL parameter.
+// Example overrides:
+//   ?tier=starter
+//   ?tier=pro
+//   ?tier=elite
 
-window.BIZ = {
-  tier: "starter", // "starter" | "pro" | "elite"
+(function () {
+  window.BIZ = window.BIZ || {};
 
-  fullName: "🔥 CONFIG WORKS 🔥",
-  title: "REPLACE_TITLE",
-  company: "REPLACE_COMPANY",
-  brandLine: "REPLACE_TAGLINE",
+  // Default tier if nothing else sets it:
+  if (!window.BIZ.tier) window.BIZ.tier = "starter";
 
-  phoneDisplay: "REPLACE_PHONE_PRETTY",
-  phoneTel: "REPLACE_PHONE_TEL",     // digits only (ex: 2095551234)
-  phoneE164: "REPLACE_PHONE_E164",   // +1XXXXXXXXXX (ex: +12095551234)
-
-  email: "REPLACE_EMAIL",
-  website: "REPLACE_WEBSITE",
-  bookingLink: "REPLACE_BOOKING_LINK",
-  textPrefill: "REPLACE_TEXT_PREFILL",
-
-  eliteCtaLabel: "REPLACE_ELITE_CTA_LABEL",
-  eliteCtaUrl: "REPLACE_ELITE_CTA_URL",
-
-  assets: {
-    logo: "../assets/logo.png",
-    profile: "../assets/profile.jpg",
-    watermark: "../assets/wm.png",
-    brochureHero: "../assets/brochure-hero.jpg"
+  // URL override:
+  try {
+    const sp = new URLSearchParams(window.location.search);
+    const t = (sp.get("tier") || "").toLowerCase().trim();
+    if (t === "starter" || t === "pro" || t === "elite") {
+      window.BIZ.tier = t;
+    }
+  } catch (e) {
+    // ignore
   }
-};
+})();
