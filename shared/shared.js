@@ -106,6 +106,41 @@
       emailLink.textContent = email;
       emailLink.setAttribute("href", `mailto:${email}`);
     }
+    
+      // --- Elite CTA wiring ---
+const eliteBtn = document.getElementById("eliteCtaBtn");
+const eliteLabelEl = document.getElementById("eliteCtaLabel");
+
+if (eliteLabelEl) {
+  eliteLabelEl.textContent =
+    (window.BIZ.eliteCtaLabel || "").trim() || "Elite Bonus";
+}
+
+if (eliteBtn) {
+  const raw = (window.BIZ.eliteCtaUrl || "").trim();
+
+  const missing =
+    !raw ||
+    raw.includes("REPLACE_") ||
+    raw.toLowerCase() === "undefined" ||
+    raw.toLowerCase() === "null";
+
+  if (missing) {
+    eliteBtn.style.display = "none";
+    eliteBtn.setAttribute("href", "#");
+  } else {
+    const url =
+      raw.startsWith("http://") || raw.startsWith("https://")
+        ? raw
+        : `https://${raw}`;
+
+    eliteBtn.style.display = "";
+    eliteBtn.setAttribute("href", url);
+    eliteBtn.setAttribute("target", "_blank");
+    eliteBtn.setAttribute("rel", "noopener");
+  }
+}
+    }
 
     const website = normUrl(B.website);
     setHref("siteBtn", website);
