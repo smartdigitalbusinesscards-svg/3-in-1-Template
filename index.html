@@ -1,4 +1,3 @@
-<!-- 3-in-1 TEMPLATE: customer config isolated below -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#04151f" />
 <title>Smart Digital eCard</title>
-<meta name="description" content="Smart Digital eCard with Pro/Elite tier features." />
+<meta name="description" content="Smart Digital eCard with tier features." />
 
 <style>
   :root{
@@ -427,7 +426,7 @@
     background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.14));
   }
 
-  /* Elite-only CTA */
+  /* Elite CTA */
   .btn.elite{
     grid-column: 1 / -1;
     border:none;
@@ -457,7 +456,7 @@
   }
   .utilityRow{
     padding: 0 18px 18px;
-    display:flex;
+    display:none;
     gap:12px;
     flex-wrap:wrap;
   }
@@ -478,13 +477,13 @@
   }
   .utilBtn svg{ width:16px; height:16px; fill: currentColor; opacity:.95; }
   .utilBtn:active{ transform: scale(.99); }
-.utilBtn:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-  pointer-events:none;
-  filter: grayscale(30%);
-}
-  
+  .utilBtn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+    pointer-events:none;
+    filter: grayscale(30%);
+  }
+
   footer{
     padding: 0 18px 18px;
     display:flex;
@@ -605,24 +604,9 @@
     position:relative;
     overflow:hidden;
   }
-
-  /* Elite visual upgrade */
   .qrFrame.elite{
     border: 1px solid rgba(255,255,255,.20);
     background: linear-gradient(180deg, rgba(79,227,255,.12), rgba(0,0,0,.14));
-  }
-  .qrFrame.elite::before{
-    content:"";
-    position:absolute;
-    inset:-40%;
-    background:
-      radial-gradient(circle at 30% 30%, rgba(79,227,255,.18), transparent 55%),
-      radial-gradient(circle at 70% 65%, rgba(99,255,178,.14), transparent 60%),
-      radial-gradient(circle at 35% 85%, rgba(255,255,255,.10), transparent 60%);
-    filter: blur(18px);
-    opacity:.9;
-    animation: drift 8s ease-in-out infinite alternate;
-    pointer-events:none;
   }
 
   canvas#qrCanvas{
@@ -670,7 +654,7 @@
     canvas#qrCanvas{ width: 230px; height: 230px; }
   }
   @media (prefers-reduced-motion: reduce){
-    .waterGlow, .pulseLine::after, .card::before, .chip.elite::after, .btn.elite::after, .qrFrame.elite::before{ animation:none !important; }
+    .waterGlow, .pulseLine::after, .card::before, .chip.elite::after, .btn.elite::after{ animation:none !important; }
     .sheet, .overlay{ transition:none !important; }
   }
 </style>
@@ -678,7 +662,7 @@
 
 <body>
   <div class="waterGlow"></div>
-<!-- ===== START ECARD LAYOUT ===== -->
+
   <div class="wrap">
     <main class="card">
 
@@ -688,15 +672,15 @@
             <img id="logoImg" class="logoImg" src="logo.png" alt="Company logo"
                  onerror="this.onerror=null; this.src='logo.jpg';" />
           </div>
-          <!-- ===== END ECARD LAYOUT ===== -->
+
           <div class="brandText">
-            <div class="brandName" id="companyName">Select Source Water</div>
-            <div class="brandTag" id="companyTag">Water Filtration • Softening • Reverse Osmosis</div>
+            <div class="brandName" id="companyName">Company</div>
+            <div class="brandTag" id="companyTag">Tagline</div>
           </div>
         </div>
 
         <div class="chipRow">
-          <div class="chip glow" id="chipMain">Pro eCard</div>
+          <div class="chip glow" id="chipMain">eCard</div>
           <div class="chip" id="chipSub">Scan-ready</div>
         </div>
       </section>
@@ -712,8 +696,8 @@
         </div>
 
         <div class="who">
-          <h1 class="name" data-biz="fullName"></h1>
-          <div class="role" id="title">Water Specialist</div>
+          <h1 class="name" id="fullName">Your Name</h1>
+          <div class="role" id="title">Title</div>
           <div class="pulseLine" aria-hidden="true"></div>
         </div>
       </section>
@@ -725,7 +709,7 @@
           </div>
           <div class="tileText">
             <div class="label">Call / Text</div>
-            <div class="value" id="phonePretty">(209) 769-4750</div>
+            <div class="value" id="phonePretty">(000) 000-0000</div>
           </div>
         </button>
 
@@ -755,8 +739,6 @@
           <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
           Book an Appointment
         </a>
-
-        <!-- Elite-only CTA injected here by JS -->
 
         <a class="btn primary" id="callBtn" href="#" aria-label="Call">
           <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
@@ -801,8 +783,8 @@
       </section>
 
       <footer>
-        <div>Smart Digital Business Card</div>
-        <div id="tierBadge">PRO</div>
+        <div>Smart Digital eCard</div>
+        <div id="tierBadge">STARTER</div>
       </footer>
     </main>
   </div>
@@ -823,654 +805,31 @@
     </div>
   </div>
 
-<script>
-  // ============================================================
-  //  TIER CONTROL — ONE TEMPLATE FOR PRO + ELITE
-  /* ============================================================
-   /* === CUSTOMER_CONFIG_START ===
-   EDIT ONLY THIS BLOCK PER CUSTOMER
-   DO NOT MOVE OR RENAME VARIABLES
-================================ */
-
-const TIER = (window.BIZ && window.BIZ.tier) ? window.BIZ.tier : "starter";
-const FULL_NAME    = "REPLACE_FULL_NAME";
-const COMPANY      = "REPLACE_COMPANY";
-const TAGLINE      = "REPLACE_TAGLINE";
-const TITLE        = "REPLACE_TITLE";
-
-const PHONE_PRETTY = "REPLACE_PHONE_PRETTY";
-const PHONE_TEL    = "REPLACE_PHONE_TEL"; // digits only, no symbols
-const EMAIL        = "REPLACE_EMAIL";
-const WEBSITE      = "REPLACE_WEBSITE";
-const BOOKING_LINK = "REPLACE_BOOKING_LINK";
-
-const TEXT_PREFILL = "REPLACE_TEXT_PREFILL";
-
-// Elite-only CTA (Elite differentiator)
-const ELITE_CTA_LABEL = "REPLACE_ELITE_CTA_LABEL";
-const ELITE_CTA_URL   = "REPLACE_ELITE_CTA_URL";
-
-/* === CUSTOMER_CONFIG_END === */
-   ============================================================ */
-// 🚫 DO NOT EDIT BELOW — TEMPLATE LOGIC
-// Changes below this line affect ALL customers
-  
-  // Apply config
-  document.title = `${FULL_NAME} | ${COMPANY}`;
-  document.getElementById("fullName").textContent = FULL_NAME;
-  document.getElementById("companyName").textContent = COMPANY;
-  document.getElementById("companyTag").textContent = TAGLINE;
-  document.getElementById("title").textContent = TITLE;
-  document.getElementById("phonePretty").textContent = PHONE_PRETTY;
-
-  const emailLink = document.getElementById("emailLink");
-  emailLink.textContent = EMAIL;
-  emailLink.href = `mailto:${EMAIL}`;
-
-  const siteLink = document.getElementById("siteLink");
-  siteLink.textContent = WEBSITE.replace(/^https?:\/\//,'');
-  siteLink.href = WEBSITE;
-
-  document.getElementById("bookBtn").href = BOOKING_LINK;
-if (TIER === "starter"){
-  document.getElementById("bookBtn").style.display = "none";
-}
-  
-  document.getElementById("callBtn").href  = `tel:${PHONE_TEL}`;
-  document.getElementById("textBtn").href  = `sms:${PHONE_TEL}${TEXT_PREFILL ? `?&body=${encodeURIComponent(TEXT_PREFILL)}` : ""}`;
-  document.getElementById("emailBtn").href = `mailto:${EMAIL}`;
-  document.getElementById("siteBtn").href  = WEBSITE;
-
-  // Tier visuals
-  const tierBadge = document.getElementById("tierBadge");
-  const chipMain = document.getElementById("chipMain");
-  const chipSub  = document.getElementById("chipSub");
-
-  if (TIER === "elite"){
-  tierBadge.textContent = "ELITE";
-  chipMain.textContent = "Elite eCard";
-  chipSub.textContent  = "Premium share tools";
-  chipMain.classList.add("elite");
-} else if (TIER === "pro"){
-  tierBadge.textContent = "PRO";
-  chipMain.textContent = "Pro eCard";
-  chipSub.textContent  = "Scan-ready";
-} else {
-  tierBadge.textContent = "STARTER";
-  chipMain.textContent = "Starter eCard";
-  chipSub.textContent  = "Quick share";
-}
-  
-// ===============================
-// TIER FEATURE MATRIX
-// ===============================
-const TIER_FEATURES = {
-  starter: {
-    booking: false,
-    qr: false,
-    qrDownload: false,
-    saveContact: true,
-    eliteCTA: false
-  },
-  pro: {
-    booking: true,
-    qr: true,
-    qrDownload: true,
-    saveContact: true,
-    eliteCTA: false
-  },
-  elite: {
-    booking: true,
-    qr: true,
-    qrDownload: true,
-    saveContact: true,
-    eliteCTA: true
-  }
-};
-
-const FEATURES = TIER_FEATURES[TIER];
-  
-  // Pro+ features (QR tools) only for Pro/Elite
-  const isPro = FEATURES.qr;
-const isElite = FEATURES.eliteCTA;
-  
-// Pro+ features (QR tools)
-document.getElementById("utilityRow").style.display = isPro ? "flex" : "none";
-document.getElementById("qrHint").style.display = isPro ? "block" : "none";
-  if (!isPro){
-  // extra safety: prevent any QR actions in Starter
-  const qrBtn = document.getElementById("qrBtn");
-  const qrDownloadBtn = document.getElementById("qrDownloadBtn");
-  if (qrBtn) qrBtn.disabled = true;
-  if (qrDownloadBtn) qrDownloadBtn.disabled = true;
-  }
-
-  // ===============================
-// APPLY TIER FEATURES TO UI
-// ===============================
-function applyTierUI(tier){
-  const t = (tier || "starter").toLowerCase();
-  const features = TIER_FEATURES[t] || TIER_FEATURES.starter;
-
-  // Helper: show/hide safely
-  const show = (el, on) => { if (el) el.style.display = on ? "" : "none"; };
-
-  // Hide/show top chip + tier badge text (if you have these elements)
-  try{
-    if (typeof setTierBadges === "function") setTierBadges(t);
-  }catch(e){}
-
-  // Booking
-  show(document.getElementById("bookingBtn"), features.booking);
-
-  // QR Buttons
-  show(document.getElementById("qrBtn"), features.qr);
-  show(document.getElementById("qrDownloadBtn"), features.qrDownload);
-
-  // Save Contact (starter still true per your matrix)
-  show(document.getElementById("saveContactBtn"), features.saveContact);
-
-  // Elite-only CTA
-  show(document.getElementById("eliteCtaBtn"), features.eliteCTA);
-}
-  
-  // Elite-only CTA injection (differentiation)
-  if (isElite){
-    const actions = document.getElementById("actions");
-    const eliteBtn = document.createElement("a");
-    eliteBtn.className = "btn elite";
-    eliteBtn.href = ELITE_CTA_URL;
-    eliteBtn.target = "_blank";
-    eliteBtn.rel = "noopener";
-    eliteBtn.setAttribute("aria-label", ELITE_CTA_LABEL);
-    eliteBtn.innerHTML = `
-      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9L22 9l-6 4 2.2 7-6.2-4.2L5.8 20 8 13 2 9l7.6-.1L12 2z"/></svg>
-      ${ELITE_CTA_LABEL}
-    `;
-    // Insert right after main booking button
-    actions.insertBefore(eliteBtn, actions.children[1]);
-  }
-
-  // Save Contact (.vcf)
-  function buildVCF(){
-    const parts = FULL_NAME.trim().split(/\s+/);
-    const first = parts[0] || "";
-    const last  = parts.length > 1 ? parts[parts.length - 1] : "";
-    return `BEGIN:VCARD
-VERSION:3.0
-N:${last};${first};;;
-FN:${FULL_NAME}
-ORG:${COMPANY}
-TITLE:${TITLE}
-TEL;TYPE=CELL:+1-${PHONE_PRETTY.replace(/[^\d]/g,'').replace(/^1/,'')}
-EMAIL;TYPE=INTERNET:${EMAIL}
-URL:${WEBSITE}
-END:VCARD`;
-  }
-
-  document.getElementById("saveContactBtn").addEventListener("click", () => {
-    const vcf = buildVCF();
-    const blob = new Blob([vcf], { type: "text/vcard" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${FULL_NAME.replace(/\s+/g,'_')}_${COMPANY.replace(/\s+/g,'')}.vcf`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-
-  // ============================================================
-  // Modal / sheet controller
-  // ============================================================
-  const overlay = document.getElementById("overlay");
-  const sheet = document.getElementById("sheet");
-  const sheetTitle = document.getElementById("sheetTitle");
-  const sheetSub = document.getElementById("sheetSub");
-  const sheetBody = document.getElementById("sheetBody");
-  const closeSheetBtn = document.getElementById("closeSheetBtn");
-
-  function openSheet(){
-    overlay.classList.add("open");
-    sheet.classList.add("open");
-    overlay.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-  function closeSheet(){
-    overlay.classList.remove("open");
-    sheet.classList.remove("open");
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-  overlay.addEventListener("click", closeSheet);
-  closeSheetBtn.addEventListener("click", closeSheet);
-  document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeSheet(); });
-
-  // Phone tile opens chooser
-  document.getElementById("phoneTile").addEventListener("click", () => {
-    sheetTitle.textContent = "Reach Out";
-    sheetSub.textContent = `${PHONE_PRETTY} • Choose Call or Text`;
-    sheetBody.innerHTML = `
-      <a class="sheetBtn primary" href="tel:${PHONE_TEL}">
-        <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
-        Call Now
-      </a>
-      <a class="sheetBtn" href="sms:${PHONE_TEL}${TEXT_PREFILL ? `?&body=${encodeURIComponent(TEXT_PREFILL)}` : ""}">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-        Text Instead
-      </a>
-    `;
-    openSheet();
-  });
-
-  // ============================================================
-  // QR Generator (local, no CDN)
-  // Uses built-in QRCode generator (compact version) below
-  // ============================================================
-
-  // --- qrcode-generator style API (compact but reliable) ---
-  // This supports typical URLs reliably; we auto-pick a version big enough.
-  // (No external downloads, no network calls.)
-
-  // Minimal QR library (byte mode only, enough for URLs)
-  // Based on classic QR matrix construction patterns.
-  // (If you ever want “overkill” enterprise QR, I can swap in the full RS version too.)
-
-  function QR(text, ecc){
-    // Auto choose version 1..10-ish by trial
-    const levels = { L:1, M:0, Q:3, H:2 };
-    const ec = levels[ecc || "M"] ?? 0;
-
-    for (let v=3; v<=10; v++){
-      try{
-        const m = QRCodeModel(v, ec);
-        m.addData(text);
-        m.make();
-        return m;
-      }catch(e){}
-    }
-    // Fallback to version 10
-    const m = QRCodeModel(10, ec);
-    m.addData(text);
-    m.make();
-    return m;
-  }
-
-  function drawQR(canvas, qrModel, opts){
-    const ctx = canvas.getContext("2d");
-    const count = qrModel.getModuleCount();
-    const quiet = opts.quiet ?? 4;
-    const scale = opts.scale ?? 6;
-    const size = (count + quiet*2) * scale;
-
-    canvas.width = size;
-    canvas.height = size;
-
-    const bg = opts.bg ?? "#ffffff";
-    ctx.fillStyle = bg;
-    ctx.fillRect(0,0,size,size);
-
-    // Module color logic
-    const mode = opts.mode || "pro"; // "pro" or "elite"
-    const fg = opts.fg ?? "#000000";
-
-    for (let r=0; r<count; r++){
-      for (let c=0; c<count; c++){
-        if (qrModel.isDark(r,c)){
-          const x = (c+quiet)*scale;
-          const y = (r+quiet)*scale;
-
-          if (mode === "elite"){
-            // Elite: subtle gradient across modules using teal/mint
-            const t = (r + c) / (count*2);
-            const a = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue("--aqua").trim() || "#4fe3ff");
-            const b = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue("--mint").trim() || "#63ffb2");
-            const col = mixRgb(a, b, t);
-            ctx.fillStyle = `rgb(${col.r},${col.g},${col.b})`;
-          } else {
-            ctx.fillStyle = fg;
-          }
-
-          if (opts.rounded){
-            const rad = Math.max(1, Math.floor(scale * 0.35));
-            roundRect(ctx, x, y, scale, scale, rad);
-            ctx.fill();
-          } else {
-            ctx.fillRect(x,y,scale,scale);
-          }
-        }
-      }
-    }
-  }
-
-  function roundRect(ctx, x, y, w, h, r){
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.arcTo(x+w, y, x+w, y+h, r);
-    ctx.arcTo(x+w, y+h, x, y+h, r);
-    ctx.arcTo(x, y+h, x, y, r);
-    ctx.arcTo(x, y, x+w, y, r);
-    ctx.closePath();
-  }
-
-  function hexToRgb(hex){
-    const h = hex.replace("#","").trim();
-    const v = h.length === 3 ? h.split("").map(ch=>ch+ch).join("") : h;
-    const n = parseInt(v, 16);
-    if (Number.isNaN(n)) return {r:79,g:227,b:255};
-    return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
-  }
-  function mixRgb(a,b,t){
-    const clamp = (x)=>Math.max(0,Math.min(255,Math.round(x)));
-    return {
-      r: clamp(a.r + (b.r - a.r)*t),
-      g: clamp(a.g + (b.g - a.g)*t),
-      b: clamp(a.b + (b.b - a.b)*t),
-    };
-  }
-
-  // QR Modal open
-  const qrBtn = document.getElementById("qrBtn");
-  const qrDownloadBtn = document.getElementById("qrDownloadBtn");
-
-  function openQR(){
-    const url = window.location.href.split("#")[0];
-    // use the global isElite we already defined above
-
-    sheetTitle.textContent = isElite ? "Elite Scan Mode" : "Scan My Card";
-    sheetSub.textContent = isElite ? "Scan • Save • Connect instantly." : "Point your camera at the code to open this card.";
-
-    sheetBody.innerHTML = `
-      <div class="qrFrame ${isElite ? "elite" : ""}">
-        <canvas id="qrCanvas" aria-label="QR Code"></canvas>
-        <div class="qrCaption">${isElite ? "Scan to save this card instantly" : "Scan to open this eCard"}</div>
-        <div class="qrUrl" id="qrUrl"></div>
-      </div>
-
-      ${isElite ? `
-        <div class="qrPack show">
-          <button class="sheetBtn primary" id="dlStandard">Download Standard</button>
-          <button class="sheetBtn" id="dlRounded">Download Rounded</button>
-          <button class="sheetBtn" id="dlPrint">Download Print (White)</button>
-          <button class="sheetBtn" id="dlDark">Download Dark</button>
-        </div>
-      ` : `
-        <button class="sheetBtn primary" id="dlStandard">Download QR</button>
-      `}
-    `;
-
-    openSheet();
-
-    const qrCanvas = document.getElementById("qrCanvas");
-    document.getElementById("qrUrl").textContent = url;
-
-    // Render QR
-    const qrModel = QR(url, "M");
-    drawQR(qrCanvas, qrModel, {
-      scale: 6,
-      quiet: 4,
-      mode: isElite ? "elite" : "pro",
-      bg: "#ffffff",
-      fg: "#000000",
-      rounded: false
-    });
-
-    // Download handlers
-    const dlStandard = document.getElementById("dlStandard");
-    if (dlStandard){
-      dlStandard.addEventListener("click", () => downloadQR(url, { variant:"standard" }));
-    }
-    const dlRounded = document.getElementById("dlRounded");
-    if (dlRounded){
-      dlRounded.addEventListener("click", () => downloadQR(url, { variant:"rounded" }));
-    }
-    const dlPrint = document.getElementById("dlPrint");
-    if (dlPrint){
-      dlPrint.addEventListener("click", () => downloadQR(url, { variant:"print" }));
-    }
-    const dlDark = document.getElementById("dlDark");
-    if (dlDark){
-      dlDark.addEventListener("click", () => downloadQR(url, { variant:"dark" }));
-    }
-  }
-
-  if (qrBtn) qrBtn.addEventListener("click", openQR);
-
-  // Quick download button (outside modal)
-  if (qrDownloadBtn){
-    qrDownloadBtn.addEventListener("click", () => {
-      const url = window.location.href.split("#")[0];
-      downloadQR(url, { variant: "standard" });
-    });
-  }
-
-  function downloadQR(url, options){
-  const variant = options.variant || "standard";
-  // use global isElite
-
-    const temp = document.createElement("canvas");
-    const qrModel = QR(url, "M");
-
-    if (variant === "dark"){
-      drawQR(temp, qrModel, {
-        scale: 8, quiet: 4,
-        mode: "pro",
-        bg: "#04151f",
-        fg: "#ecf6ff",
-        rounded: false
-      });
-    } else if (variant === "print"){
-      drawQR(temp, qrModel, {
-        scale: 10, quiet: 4,
-        mode: "pro",
-        bg: "#ffffff",
-        fg: "#000000",
-        rounded: false
-      });
-    } else if (variant === "rounded"){
-      drawQR(temp, qrModel, {
-        scale: 8, quiet: 4,
-        mode: isElite ? "elite" : "pro",
-        bg: "#ffffff",
-        fg: "#000000",
-        rounded: true
-      });
-    } else {
-      // standard
-      drawQR(temp, qrModel, {
-        scale: 8, quiet: 4,
-        mode: isElite ? "elite" : "pro",
-        bg: "#ffffff",
-        fg: "#000000",
-        rounded: false
-      });
-    }
-
-    const a = document.createElement("a");
-    a.href = temp.toDataURL("image/png");
-    a.download = `${FULL_NAME.replace(/\s+/g,'_')}_QR_${variant}.png`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-
-  // ============================================================
-  // QR core model (compact)
-  // ============================================================
-  function QRCodeModel(typeNumber, errorCorrectLevel){
-    const PAD0 = 0xEC, PAD1 = 0x11;
-
-    const qr = {
-      typeNumber,
-      errorCorrectLevel,
-      modules: null,
-      moduleCount: 0,
-      dataCache: null,
-      dataList: [],
-      addData(data){ this.dataList.push(QR8bitByte(data)); this.dataCache = null; },
-      isDark(r,c){ return this.modules[r][c]; },
-      getModuleCount(){ return this.moduleCount; },
-      make(){
-        this.moduleCount = this.typeNumber * 4 + 17;
-        this.modules = Array.from({length:this.moduleCount}, () => Array(this.moduleCount).fill(null));
-
-        setupPositionProbePattern(this, 0, 0);
-        setupPositionProbePattern(this, this.moduleCount - 7, 0);
-        setupPositionProbePattern(this, 0, this.moduleCount - 7);
-        setupTimingPattern(this);
-        setupTypeInfo(this, this.errorCorrectLevel, 0);
-
-        if (this.dataCache == null) this.dataCache = createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
-        mapData(this, this.dataCache, 0);
-      }
-    };
-
-    function QR8bitByte(data){
-      const bytes = [];
-      for (let i=0; i<data.length; i++) bytes.push(data.charCodeAt(i));
-      return {
-        mode: 1,
-        getLength(){ return bytes.length; },
-        write(buffer){ for (let i=0; i<bytes.length; i++) buffer.put(bytes[i], 8); }
-      };
-    }
-
-    function QRBitBuffer(){
-      return {
-        buffer: [],
-        length: 0,
-        put(num, len){
-          for (let i=0; i<len; i++) this.putBit(((num >>> (len - i - 1)) & 1) === 1);
-        },
-        putBit(bit){
-          const idx = Math.floor(this.length / 8);
-          if (this.buffer.length <= idx) this.buffer.push(0);
-          if (bit) this.buffer[idx] |= (0x80 >>> (this.length % 8));
-          this.length++;
-        }
-      };
-    }
-
-    function setupPositionProbePattern(qr, row, col){
-      for (let r=-1; r<=7; r++){
-        if (row+r <= -1 || qr.moduleCount <= row+r) continue;
-        for (let c=-1; c<=7; c++){
-          if (col+c <= -1 || qr.moduleCount <= col+c) continue;
-          if ((0 <= r && r <= 6 && (c === 0 || c === 6)) ||
-              (0 <= c && c <= 6 && (r === 0 || r === 6)) ||
-              (2 <= r && r <= 4 && 2 <= c && c <= 4)){
-            qr.modules[row+r][col+c] = true;
-          } else {
-            qr.modules[row+r][col+c] = false;
-          }
-        }
-      }
-    }
-
-    function setupTimingPattern(qr){
-      for (let i=8; i<qr.moduleCount-8; i++){
-        if (qr.modules[i][6] === null) qr.modules[i][6] = (i % 2 === 0);
-        if (qr.modules[6][i] === null) qr.modules[6][i] = (i % 2 === 0);
-      }
-    }
-
-    function setupTypeInfo(qr, errorCorrectLevel, maskPattern){
-      const data = (errorCorrectLevel << 3) | maskPattern;
-      const bits = getBCHTypeInfo(data);
-      for (let i=0; i<15; i++){
-        const mod = ((bits >> i) & 1) === 1;
-        // vertical
-        if (i < 6) qr.modules[i][8] = mod;
-        else if (i < 8) qr.modules[i + 1][8] = mod;
-        else qr.modules[qr.moduleCount - 15 + i][8] = mod;
-        // horizontal
-        if (i < 8) qr.modules[8][qr.moduleCount - i - 1] = mod;
-        else if (i < 9) qr.modules[8][15 - i - 1 + 1] = mod;
-        else qr.modules[8][15 - i - 1] = mod;
-      }
-      qr.modules[qr.moduleCount - 8][8] = true;
-    }
-
-    function getBCHTypeInfo(data){
-      let d = data << 10;
-      while (getBCHDigit(d) - getBCHDigit(0x537) >= 0){
-        d ^= (0x537 << (getBCHDigit(d) - getBCHDigit(0x537)));
-      }
-      return ((data << 10) | d) ^ 0x5412;
-    }
-    function getBCHDigit(data){
-      let digit = 0;
-      while (data !== 0){ digit++; data >>>= 1; }
-      return digit;
-    }
-
-    function createData(typeNumber, errorCorrectLevel, dataList){
-      const buffer = QRBitBuffer();
-
-      for (let i=0; i<dataList.length; i++){
-        const data = dataList[i];
-        buffer.put(0x4, 4); // byte mode
-        // length bits vary by version; for v1-9 it's 8, v10+ is 16. We'll choose:
-        buffer.put(data.getLength(), typeNumber < 10 ? 8 : 16);
-        data.write(buffer);
-      }
-
-      // Rough capacity by version to avoid overflow; this is practical for typical URLs.
-      // If you ever hit a super long URL, shorten it (or we upgrade QR core).
-      const approxDataBytes = (typeNumber < 10) ? 120 : 200;
-
-      if (buffer.length + 4 <= approxDataBytes * 8) buffer.put(0, 4);
-      while (buffer.length % 8 !== 0) buffer.putBit(false);
-
-      while (buffer.buffer.length < approxDataBytes){
-        buffer.put(PAD0, 8);
-        if (buffer.buffer.length >= approxDataBytes) break;
-        buffer.put(PAD1, 8);
-      }
-      return buffer.buffer;
-    }
-
-    function mapData(qr, data, maskPattern){
-      let inc = -1;
-      let row = qr.moduleCount - 1;
-      let bitIndex = 7;
-      let byteIndex = 0;
-
-      for (let col = qr.moduleCount - 1; col > 0; col -= 2){
-        if (col === 6) col--;
-        while (true){
-          for (let c=0; c<2; c++){
-            if (qr.modules[row][col - c] === null){
-              let dark = false;
-              if (byteIndex < data.length){
-                dark = (((data[byteIndex] >>> bitIndex) & 1) === 1);
-              }
-              const mask = ((row + col) % 2 === 0);
-              qr.modules[row][col - c] = mask ? !dark : dark;
-
-              bitIndex--;
-              if (bitIndex === -1){
-                byteIndex++;
-                bitIndex = 7;
-              }
-            }
-          }
-          row += inc;
-          if (row < 0 || qr.moduleCount <= row){
-            row -= inc;
-            inc = -inc;
-            break;
-          }
-        }
-      }
-    }
-
-    return qr;
-  }
-  applyTierUI(TIER);
-</script>
-<script src="shared/config.js"></script>
-<script src="shared/shared.js"></script>
+  <!-- ============================================================
+       CUSTOMER CONFIG (edit per customer)
+       ============================================================ -->
+  <script>
+    // Tier can be set in shared/config.js via window.BIZ.tier or via URL ?tier=starter|pro|elite
+    const FULL_NAME    = "REPLACE_FULL_NAME";
+    const COMPANY      = "REPLACE_COMPANY";
+    const TAGLINE      = "REPLACE_TAGLINE";
+    const TITLE        = "REPLACE_TITLE";
+
+    const PHONE_PRETTY = "REPLACE_PHONE_PRETTY";
+    const PHONE_TEL    = "REPLACE_PHONE_TEL"; // digits only
+    const EMAIL        = "REPLACE_EMAIL";
+    const WEBSITE      = "REPLACE_WEBSITE";
+    const BOOKING_LINK = "REPLACE_BOOKING_LINK";
+
+    const TEXT_PREFILL = "REPLACE_TEXT_PREFILL";
+
+    // Elite-only CTA (Elite differentiator)
+    const ELITE_CTA_LABEL = "REPLACE_ELITE_CTA_LABEL";
+    const ELITE_CTA_URL   = "REPLACE_ELITE_CTA_URL";
+  </script>
+
+  <!-- Shared logic -->
+  <script src="shared/config.js"></script>
+  <script src="shared/shared.js"></script>
 </body>
 </html>
