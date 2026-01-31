@@ -297,3 +297,47 @@ END:VCARD`;
   // If tier changes via hash change, re-apply
   window.addEventListener("hashchange", applyTierUI);
 })();
+/* ============================
+   BUTTON WIRING (FINAL)
+   ============================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // --- CALL ---
+  const callBtn = document.getElementById("callBtn");
+  if (callBtn && window.BIZ?.phoneTel) {
+    callBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = `tel:${window.BIZ.phoneTel}`;
+    });
+  }
+
+  // --- TEXT ---
+  const textBtn = document.getElementById("textBtn");
+  if (textBtn && window.BIZ?.phoneTel) {
+    textBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const msg = encodeURIComponent(window.BIZ.textPrefill || "");
+      window.location.href = `sms:${window.BIZ.phoneTel}?body=${msg}`;
+    });
+  }
+
+  // --- SHOW QR ---
+  const qrBtn = document.getElementById("qrBtn");
+  if (qrBtn && typeof openQRSheet === "function") {
+    qrBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openQRSheet();
+    });
+  }
+
+  // --- DOWNLOAD QR ---
+  const qrDownloadBtn = document.getElementById("qrDownloadBtn");
+  if (qrDownloadBtn && typeof downloadQR === "function") {
+    qrDownloadBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      downloadQR(window.location.href, { variant: "standard" });
+    });
+  }
+
+});
