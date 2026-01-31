@@ -1,24 +1,29 @@
 // shared/config.js
-// Purpose: set a default tier & allow quick override via URL parameter.
-// Example overrides:
-//   ?tier=starter
-//   ?tier=pro
-//   ?tier=elite
-
-(function () {
+(() => {
   window.BIZ = window.BIZ || {};
 
-  // Default tier if nothing else sets it:
+  // 1) default tier if nothing else provided
   if (!window.BIZ.tier) window.BIZ.tier = "starter";
 
-  // URL override:
-  try {
-    const sp = new URLSearchParams(window.location.search);
-    const t = (sp.get("tier") || "").toLowerCase().trim();
-    if (t === "starter" || t === "pro" || t === "elite") {
-      window.BIZ.tier = t;
+  // 2) allow URL tier via:
+  //    ?tier=elite   (preferred)
+  //    #tier=elite   (also supported)
+  //    #?tier=elite  (supported too)
+  const pickTierFromUrl = () => {
+    const fromSearch = new URLSearchParams(window.location.search).get("tier");
+
+    const hash = (window.location.hash || "").replace(/^#/, "");
+    const hashClean = hash.startsWith("?") ? hash.slice(1) : hash;
+    const fromHash = new URLSearchParams(hashClean).get("tier") || (hash.includes("tier=") ? null : hash);
+
+    const tier = (fromSearch || fromHash || "").toString().trim().toLowerCase();
+    if (tier === "starter" || tier === "pro" || tier === "elite") {
+      window.BIZ.tier = tier;
     }
-  } catch (e) {
-    // ignore
-  }
+  };
+
+  pickTierFromUrl();
+
+  // If user changes only the hash later, still update tier
+  window.addEventListener("hashchange", pickTierFromUrl);
 })();
