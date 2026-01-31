@@ -2,342 +2,221 @@
 (() => {
   const $ = (id) => document.getElementById(id);
 
-  const safeText = (v) => (v == null ? "" : String(v));
-  const normalizeWebsite = (url) => {
-    const u = safeText(url).trim();
-    if (!u) return "";
-    if (/^https?:\/\//i.test(u)) return u;
-    return "https://" + u;
+  // ---------- helpers ----------
+  const isPlaceholder = (v) =>
+    !v || String(v).trim() === "" || /^REPLACE_/i.test(String(v).trim());
+
+  const normUrl = (u) => {
+    if (isPlaceholder(u)) return "";
+    const s = String(u).trim();
+    if (/^https?:\/\//i.test(s)) return s;
+    // allow people to paste "example.com"
+    return "https://" + s.replace(/^\/+/, "");
+  };
+
+  const setText = (id, value) => {
+    const el = $(id);
+    if (el && !isPlaceholder(value)) el.textContent = value;
+  };
+
+  const setHref = (id, href) => {
+    const el = $(id);
+    if (!el) return;
+    if (!href) {
+      // disable safely
+      el.setAttribute("aria-disabled", "true");
+      el.style.opacity = "0.45";
+      el.style.pointerEvents = "none";
+      return;
+    }
+    el.setAttribute("aria-disabled", "false");
+    el.style.opacity = "";
+    el.style.pointerEvents = "";
+    el.setAttribute("href", href);
+  };
+
+  const buildSmsLink = (digitsOnly, body) => {
+    const num = String(digitsOnly || "").replace(/[^\d]/g, "");
+    if (!num) return "";
+    const msg = isPlaceholder(body) ? "" : String(body || "");
+    if (!msg) return `sms:${num}`;
+
+    // iOS prefers &body=, Android prefers ?body=
+    const ua = navigator.userAgent || "";
+    const isiOS = /iPhone|iPad|iPod/i.test(ua);
+    const sep = isiOS ? "&" : "?";
+    return `sms:${num}${sep}body=${encodeURIComponent(msg)}`;
+  };
+
+  // ---------- tier features ----------
+  const FEATURES = {
+    starter: { booking: true, qr: false, qrDownload: false, eliteCTA: false },
+    pro:     { booking: true, qr: true,  qrDownload: true,  eliteCTA: false },
+    elite:   { booking: true, qr: true,  qrDownload: true,  eliteCTA: true  },
   };
 
   const getTier = () => {
-    const t = (window.BIZ && window.BIZ.tier) ? String(window.BIZ.tier).toLowerCase() : "starter";
-    return (t === "elite" || t === "pro" || t === "starter") ? t : "starter";
+    const t = (window.BIZ?.tier || "starter").toString().toLowerCase();
+    return t === "pro" || t === "elite" ? t : "starter";
   };
 
-  const FEATURES = {
-    starter: { booking:false, qr:false, qrDownload:false, saveContact:true, eliteCTA:false },
-    pro:     { booking:true,  qr:true,  qrDownload:true,  saveContact:true, eliteCTA:false },
-    elite:   { booking:true,  qr:true,  qrDownload:true,  saveContact:true, eliteCTA:true  }
-  };
-
-  const show = (el, on, displayValue = "") => {
-    if (!el) return;
-    el.style.display = on ? displayValue : "none";
-  };
-
-  // -----------------------------
-  // Apply config to UI
-  // -----------------------------
-  const applyCardData = () => {
-    const c = window.CARD || {};
-
-    const fullName = safeText(c.fullName).trim() || "Your Name";
-    const company = safeText(c.company).trim() || "Company";
-    const tagline = safeText(c.tagline).trim() || "Tagline";
-    const title = safeText(c.title).trim() || "Title";
-
-    const phonePretty = safeText(c.phonePretty).trim() || "(000) 000-0000";
-    const phoneTel = safeText(c.phoneTel).replace(/[^\d]/g, ""); // digits only
-    const email = safeText(c.email).trim() || "example@email.com";
-    const website = normalizeWebsite(c.website || "example.com");
-    const bookingLink = safeText(c.bookingLink).trim() || "#";
-    const textPrefill = safeText(c.textPrefill).trim();
-
-    document.title = `${fullName} | ${company}`;
-
-    if ($("fullName")) $("fullName").textContent = fullName;
-    if ($("companyName")) $("companyName").textContent = company;
-    if ($("companyTag")) $("companyTag").textContent = tagline;
-    if ($("title")) $("title").textContent = title;
-    if ($("phonePretty")) $("phonePretty").textContent = phonePretty;
-
-    const emailLink = $("emailLink");
-    if (emailLink) {
-      emailLink.textContent = email;
-      emailLink.href = `mailto:${email}`;
-    }
-
-    const siteLink = $("siteLink");
-    if (siteLink) {
-      siteLink.textContent = website.replace(/^https?:\/\//i, "");
-      siteLink.href = website;
-    }
-
-    const bookBtn = $("bookBtn");
-    if (bookBtn) bookBtn.href = bookingLink;
-
-    const callBtn = $("callBtn");
-    const textBtn = $("textBtn");
-    const emailBtn = $("emailBtn");
-    const siteBtn = $("siteBtn");
-
-    if (callBtn && phoneTel) callBtn.href = `tel:${phoneTel}`;
-    if (textBtn && phoneTel) textBtn.href = `sms:${phoneTel}${textPrefill ? `?&body=${encodeURIComponent(textPrefill)}` : ""}`;
-    if (emailBtn) emailBtn.href = `mailto:${email}`;
-    if (siteBtn) siteBtn.href = website;
-
-    // Phone tile opens chooser sheet
-    const phoneTile = $("phoneTile");
-    if (phoneTile) {
-      phoneTile.onclick = () => openPhoneSheet(phonePretty, phoneTel, textPrefill);
-    }
-  };
-
-  // -----------------------------
-  // Tier UI + elite CTA injection
-  // -----------------------------
-  const removeEliteBtnIfAny = () => {
-    const existing = document.querySelector("[data-elite-cta='1']");
-    if (existing) existing.remove();
-  };
-
-  const setTierBadges = (tier) => {
-    const tierBadge = $("tierBadge");
-    const chipMain = $("chipMain");
-    const chipSub = $("chipSub");
-
-    if (!tierBadge || !chipMain || !chipSub) return;
-
-    chipMain.classList.remove("elite");
-
-    if (tier === "elite") {
-      tierBadge.textContent = "ELITE";
-      chipMain.textContent = "Elite eCard";
-      chipSub.textContent = "Premium share tools";
-      chipMain.classList.add("elite");
-    } else if (tier === "pro") {
-      tierBadge.textContent = "PRO";
-      chipMain.textContent = "Pro eCard";
-      chipSub.textContent = "Scan-ready";
-    } else {
-      tierBadge.textContent = "STARTER";
-      chipMain.textContent = "Starter eCard";
-      chipSub.textContent = "Quick share";
-    }
-  };
-
-  const injectEliteCTA = () => {
-    const c = window.CARD || {};
-    const label = safeText(c.eliteCtaLabel).trim();
-    const url = safeText(c.eliteCtaUrl).trim();
-
-    if (!label || !url) return;
-
-    const actions = $("actions");
-    const bookBtn = $("bookBtn");
-    if (!actions || !bookBtn) return;
-
-    const eliteBtn = document.createElement("a");
-    eliteBtn.className = "btn elite";
-    eliteBtn.href = url;
-    eliteBtn.target = "_blank";
-    eliteBtn.rel = "noopener";
-    eliteBtn.setAttribute("aria-label", label);
-    eliteBtn.setAttribute("data-elite-cta", "1");
-    eliteBtn.innerHTML = `
-      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9L22 9l-6 4 2.2 7-6.2-4.2L5.8 20 8 13 2 9l7.6-.1L12 2z"/></svg>
-      ${label}
-    `;
-
-    // Put it right after booking button
-    const after = bookBtn.nextElementSibling;
-    if (after) actions.insertBefore(eliteBtn, after);
-    else actions.appendChild(eliteBtn);
-  };
-
+  // ---------- UI apply ----------
   const applyTierUI = () => {
     const tier = getTier();
     const f = FEATURES[tier];
 
-    setTierBadges(tier);
+    // chips/badge
+    const chipMain = $("chipMain");
+    const tierBadge = $("tierBadge");
+    if (chipMain) chipMain.textContent = tier === "elite" ? "Elite eCard" : tier === "pro" ? "Pro eCard" : "eCard";
+    if (tierBadge) tierBadge.textContent = tier.toUpperCase();
 
-    // Booking
-    show($("bookBtn"), f.booking);
+    // QR row visibility (Pro+)
+    const hint = $("qrHint");
+    const row = $("utilityRow");
+    if (hint) hint.style.display = f.qr ? "block" : "none";
+    if (row) row.style.display = f.qr ? "flex" : "none";
 
-    // Pro/Elite: QR tools
-    show($("utilityRow"), f.qr, "flex");
-    show($("qrHint"), f.qr, "block");
+    // Elite CTA button
+    const eliteBtn = $("eliteCtaBtn");
+    if (eliteBtn) eliteBtn.style.display = f.eliteCTA ? "" : "none";
+  };
 
-    // Save Contact
-    show($("saveContactBtn"), f.saveContact);
+  const applyCardData = () => {
+    const B = window.BIZ || {};
+    // text
+    setText("fullName", B.fullName);
+    setText("companyName", B.company);
+    setText("companyTag", B.tagline);
+    setText("title", B.title);
+    setText("phonePretty", B.phonePretty);
+
+    // links
+    const digits = String(B.phoneTel || "").replace(/[^\d]/g, "");
+    const telHref = digits ? `tel:${digits}` : "";
+    const smsHref = buildSmsLink(digits, B.textPrefill);
+
+    setHref("callBtn", telHref);
+    setHref("textBtn", smsHref);
+
+    const email = isPlaceholder(B.email) ? "" : String(B.email).trim();
+    setHref("emailBtn", email ? `mailto:${email}` : "");
+    const emailLink = $("emailLink");
+    if (emailLink && email) {
+      emailLink.textContent = email;
+      emailLink.setAttribute("href", `mailto:${email}`);
+    }
+
+    const website = normUrl(B.website);
+    setHref("siteBtn", website);
+    const siteLink = $("siteLink");
+    if (siteLink && website) {
+      siteLink.textContent = website.replace(/^https?:\/\//i, "");
+      siteLink.setAttribute("href", website);
+    }
+
+    const booking = normUrl(B.bookingLink);
+    setHref("bookBtn", booking);
 
     // Elite CTA
-    removeEliteBtnIfAny();
-    if (f.eliteCTA) injectEliteCTA();
+    const eliteLabel = isPlaceholder(B.eliteCtaLabel) ? "" : String(B.eliteCtaLabel).trim();
+    const eliteUrl = normUrl(B.eliteCtaUrl);
+    const eliteBtn = $("eliteCtaBtn");
+    if (eliteBtn) {
+      eliteBtn.textContent = eliteLabel || "Elite Offer";
+      setHref("eliteCtaBtn", eliteUrl);
+    }
+
+    // Phone tile click should open sheet (optional), but at least not break:
+    const phoneTile = $("phoneTile");
+    if (phoneTile && digits) {
+      phoneTile.addEventListener("click", () => {
+        // default behavior: open dialer
+        window.location.href = telHref;
+      });
+    }
   };
 
-  // -----------------------------
-  // Save Contact (VCF)
-  // -----------------------------
-  const buildVCF = () => {
-    const c = window.CARD || {};
-    const full = safeText(c.fullName).trim();
-    const company = safeText(c.company).trim();
-    const title = safeText(c.title).trim();
-    const phonePretty = safeText(c.phonePretty).trim();
-    const email = safeText(c.email).trim();
-    const website = normalizeWebsite(c.website || "");
-
-    const parts = full.split(/\s+/).filter(Boolean);
-    const first = parts[0] || "";
-    const last = parts.length > 1 ? parts[parts.length - 1] : "";
-
-    const digits = phonePretty.replace(/[^\d]/g, "").replace(/^1/, "");
-    const tel = digits ? `+1-${digits}` : "";
-
-    return `BEGIN:VCARD
-VERSION:3.0
-N:${last};${first};;;
-FN:${full}
-ORG:${company}
-TITLE:${title}
-TEL;TYPE=CELL:${tel}
-EMAIL;TYPE=INTERNET:${email}
-URL:${website}
-END:VCARD`;
-  };
-
-  const wireSaveContact = () => {
-    const btn = $("saveContactBtn");
-    if (!btn) return;
-
-    btn.addEventListener("click", () => {
-      const vcf = buildVCF();
-      const blob = new Blob([vcf], { type: "text/vcard" });
-      const url = URL.createObjectURL(blob);
-
-      const c = window.CARD || {};
-      const full = (safeText(c.fullName).trim() || "Contact").replace(/\s+/g, "_");
-      const company = (safeText(c.company).trim() || "").replace(/\s+/g, "");
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${full}_${company}.vcf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      URL.revokeObjectURL(url);
-    });
-  };
-
-  // -----------------------------
-  // Sheet / Modal controller
-  // -----------------------------
-  const overlay = $("overlay");
-  const sheet = $("sheet");
-  const sheetTitle = $("sheetTitle");
-  const sheetSub = $("sheetSub");
-  const sheetBody = $("sheetBody");
-  const closeSheetBtn = $("closeSheetBtn");
+  // ---------- sheet ----------
+  const overlay = () => $("overlay");
+  const sheet = () => $("sheet");
+  const sheetBody = () => $("sheetBody");
 
   const openSheet = () => {
-    if (!overlay || !sheet) return;
-    overlay.classList.add("open");
-    sheet.classList.add("open");
-    overlay.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
+    overlay()?.classList.add("open");
+    sheet()?.classList.add("open");
   };
-
   const closeSheet = () => {
-    if (!overlay || !sheet) return;
-    overlay.classList.remove("open");
-    sheet.classList.remove("open");
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
+    overlay()?.classList.remove("open");
+    sheet()?.classList.remove("open");
+    if (sheetBody()) sheetBody().innerHTML = "";
   };
 
   const wireSheet = () => {
-    if (overlay) overlay.addEventListener("click", closeSheet);
-    if (closeSheetBtn) closeSheetBtn.addEventListener("click", closeSheet);
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+    $("closeSheetBtn")?.addEventListener("click", closeSheet);
+    overlay()?.addEventListener("click", closeSheet);
   };
 
-  const openPhoneSheet = (phonePretty, phoneTel, textPrefill) => {
-    if (!sheetTitle || !sheetSub || !sheetBody) return;
+  // ---------- QR (failsafe: qrserver image) ----------
+  const qrImageUrl = () => {
+    const url = window.location.href.split("#")[0]; // clean-ish
+    const data = encodeURIComponent(url);
+    return `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${data}`;
+  };
 
-    sheetTitle.textContent = "Reach Out";
-    sheetSub.textContent = `${phonePretty} • Choose Call or Text`;
+  const showQR = () => {
+    const body = sheetBody();
+    if (!body) return;
 
-    const telHref = phoneTel ? `tel:${phoneTel}` : "#";
-    const smsHref = phoneTel ? `sms:${phoneTel}${textPrefill ? `?&body=${encodeURIComponent(textPrefill)}` : ""}` : "#";
+    const imgUrl = qrImageUrl();
 
-    sheetBody.innerHTML = `
-      <a class="sheetBtn primary" href="${telHref}">
-        <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
-        Call Now
-      </a>
-      <a class="sheetBtn" href="${smsHref}">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-        Text Instead
+    body.innerHTML = `
+      <div class="qrFrame elite">
+        <div class="qrCaption">Scan to open this card</div>
+        <img id="qrImg" src="${imgUrl}" alt="QR code" style="width:260px;height:260px;border-radius:14px;background:#fff;padding:10px;">
+        <div class="qrUrl">${window.location.href}</div>
+      </div>
+
+      <a class="sheetBtn primary" id="qrDownloadLink" href="${imgUrl}" download="qr-code.png">
+        Download QR
       </a>
     `;
 
     openSheet();
   };
 
-  // -----------------------------
-  // Init
-  // -----------------------------
+  const wireQR = () => {
+    $("qrBtn")?.addEventListener("click", showQR);
+
+    $("qrDownloadBtn")?.addEventListener("click", () => {
+      // If sheet already open, the in-sheet download button exists.
+      // If not, open sheet and provide download.
+      showQR();
+
+      // Auto-click download once sheet is built (small delay so DOM exists)
+      setTimeout(() => {
+        const a = $("qrDownloadLink");
+        if (a) a.click();
+      }, 50);
+    });
+  };
+
+  // ---------- init ----------
   const init = () => {
     applyCardData();
     applyTierUI();
-    wireSaveContact();
     wireSheet();
+    wireQR();
   };
 
-  // ensure DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
 
-  // If tier changes via hash change, re-apply
-  window.addEventListener("hashchange", applyTierUI);
+  // if tier changes via hash/search updates
+  window.addEventListener("hashchange", () => {
+    applyTierUI();
+  });
 })();
-/* ============================
-   BUTTON WIRING (FINAL)
-   ============================ */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  // --- CALL ---
-  const callBtn = document.getElementById("callBtn");
-  if (callBtn && window.BIZ?.phoneTel) {
-    callBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = `tel:${window.BIZ.phoneTel}`;
-    });
-  }
-
-  // --- TEXT ---
-  const textBtn = document.getElementById("textBtn");
-  if (textBtn && window.BIZ?.phoneTel) {
-    textBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const msg = encodeURIComponent(window.BIZ.textPrefill || "");
-      window.location.href = `sms:${window.BIZ.phoneTel}?body=${msg}`;
-    });
-  }
-
-  // --- SHOW QR ---
-  const qrBtn = document.getElementById("qrBtn");
-  if (qrBtn && typeof openQRSheet === "function") {
-    qrBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      openQRSheet();
-    });
-  }
-
-  // --- DOWNLOAD QR ---
-  const qrDownloadBtn = document.getElementById("qrDownloadBtn");
-  if (qrDownloadBtn && typeof downloadQR === "function") {
-    qrDownloadBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      downloadQR(window.location.href, { variant: "standard" });
-    });
-  }
-
-});
