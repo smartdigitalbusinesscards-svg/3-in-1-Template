@@ -111,23 +111,42 @@
     margin: 0 18px;
   }
 
-/* ===== Watermark ===== */
-.wm{
+/* ===== Brand Watermark ===== */
+.topZone{
+  position:relative;
+  overflow:hidden;
+}
+
+.topZone .wm{
   position:absolute;
   inset:0;
+  pointer-events:none;
+  z-index:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  pointer-events:none;
-  opacity:.25;
-  z-index:0;
+  opacity:.18;
+}
+
+.topZone .wm img{
+  width:140%;
+  max-width:none;
+  height:auto;
+  object-fit:contain;
+  transform: rotate(-12deg);
+  filter: brightness(1.15) contrast(1.1);
 }
 
 .wm img{
-  max-width:70%;
-  max-height:70%;
-  object-fit:contain;
-  filter: grayscale(100%);
+  width: 72%;
+  height: auto;
+  max-width: none;
+  max-height: none;
+
+  transform: rotate(-18deg);
+  opacity: 0.16;
+
+  filter: brightness(1.15) contrast(1.1) grayscale(100%);
 }
 
 /* Tier control */
