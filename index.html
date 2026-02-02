@@ -111,6 +111,31 @@
     margin: 0 18px;
   }
 
+/* ===== Watermark ===== */
+.wm{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:.25;
+  z-index:0;
+}
+
+.wm img{
+  max-width:70%;
+  max-height:70%;
+  object-fit:contain;
+  filter: grayscale(100%);
+}
+
+/* Tier control */
+body[data-tier="pro"] .wm,
+body[data-tier="elite"] .wm{
+  display:none;
+}
+  
   /* Brand bar */
   .brandBar{
     padding: 18px 18px 14px;
@@ -615,41 +640,48 @@
   <div class="wrap">
     <main class="card">
 
-      <section class="brandBar">
-        <div class="brandLeft">
-          <div class="logoBox" title="Company Logo">
-            <img id="logoImg" class="logoImg" src="logo.png" alt="Company logo"
-                 onerror="this.onerror=null; this.src='logo.jpg';" />
-          </div>
+      <!-- TOP ZONE -->
+<div class="topZone">
+  <div class="wm" aria-hidden="true">
+    <img src="hd-watermark.png" alt="" />
+  </div>
 
-          <div class="brandText">
-            <div class="brandName" id="companyName">Company</div>
-            <div class="brandTag" id="companyTag">Tagline</div>
-          </div>
-        </div>
+  <section class="brandBar">
+    <div class="brandLeft">
+      <div class="logoBox" title="Company Logo">
+        <img id="logoImg" class="logoImg" src="logo.png" alt="Company logo"
+             onerror="this.onerror=null; this.src='logo.jpg';" />
+      </div>
 
-        <div class="chipRow">
-          <div class="chip glow" id="chipMain">eCard</div>
-          <div class="chip" id="chipSub">Scan-ready</div>
-        </div>
-      </section>
+      <div class="brandText">
+        <div class="brandName" id="companyName">Company</div>
+        <div class="brandTag" id="companyTag">Tagline</div>
+      </div>
+    </div>
 
-      <div class="divider"></div>
+    <div class="chipRow">
+      <div class="chip glow" id="chipMain">eCard</div>
+      <div class="chip" id="chipSub">Scan-ready</div>
+    </div>
+  </section>
 
-      <section class="hero">
-        <div class="avatarRing">
-          <div class="avatarWrap">
-            <img class="avatar" src="profile.jpg" alt="Profile photo"
-                 onerror="this.style.display='none'; this.parentElement.style.background='rgba(0,0,0,.18)';" />
-          </div>
-        </div>
+  <div class="divider"></div>
 
-        <div class="who">
-          <h1 class="name" id="fullName">Your Name</h1>
-          <div class="role" id="title">Title</div>
-          <div class="pulseLine" aria-hidden="true"></div>
-        </div>
-      </section>
+  <section class="hero">
+    <div class="avatarRing">
+      <div class="avatarWrap">
+        <img class="avatar" src="profile.jpg" alt="Profile photo"
+             onerror="this.style.display='none'; this.parentElement.style.background='rgba(0,0,0,.18)';" />
+      </div>
+    </div>
+
+    <div class="who">
+      <h1 class="name" id="fullName">Your Name</h1>
+      <div class="role" id="title">Title</div>
+      <div class="pulseLine" aria-hidden="true"></div>
+    </div>
+  </section>
+</div>
 
       <section class="info">
         <button class="tileBtn" id="phoneTile" type="button" aria-label="Call or text">
