@@ -111,50 +111,43 @@
     margin: 0 18px;
   }
 
-/* ===== Brand Watermark ===== */
-.topZone{
-  position:relative;
-  overflow:hidden;
-}
+  /* =========================================================
+     ✅ Brand Watermark (CLEAN + SCOPED)
+     - One watermark system only
+     - Visible for ALL tiers (starter/pro/elite)
+     - Sits behind topZone content only
+     ========================================================= */
 
-.topZone .wm{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  opacity:.18;
-}
+  .topZone{
+    position:relative;
+    overflow:hidden;
+  }
 
-.topZone .wm img{
-  width:140%;
-  max-width:none;
-  height:auto;
-  object-fit:contain;
-  transform: rotate(-12deg);
-  filter: brightness(1.15) contrast(1.1);
-}
+  .topZone .wm{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:.16; /* tweak if needed */
+  }
 
-.wm img{
-  width: 72%;
-  height: auto;
-  max-width: none;
-  max-height: none;
+  .topZone .wm img{
+    width: 120%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    transform: rotate(-14deg);
+    filter: brightness(1.12) contrast(1.08) grayscale(100%);
+  }
 
-  transform: rotate(-18deg);
-  opacity: 0.16;
+  .topZone > *:not(.wm){
+    position:relative;
+    z-index:1;
+  }
 
-  filter: brightness(1.15) contrast(1.1) grayscale(100%);
-}
-
-/* Tier control */
-body[data-tier="pro"] .wm,
-body[data-tier="elite"] .wm{
-  display:none;
-}
-  
   /* Brand bar */
   .brandBar{
     padding: 18px 18px 14px;
@@ -660,47 +653,47 @@ body[data-tier="elite"] .wm{
     <main class="card">
 
       <!-- TOP ZONE -->
-<div class="topZone">
-  <div class="wm" aria-hidden="true">
-    <img src="hd-watermark.png" alt="" />
-  </div>
+      <div class="topZone">
+        <div class="wm" aria-hidden="true">
+          <img src="hd-watermark.png" alt="" />
+        </div>
 
-  <section class="brandBar">
-    <div class="brandLeft">
-      <div class="logoBox" title="Company Logo">
-        <img id="logoImg" class="logoImg" src="logo.png" alt="Company logo"
-             onerror="this.onerror=null; this.src='logo.jpg';" />
+        <section class="brandBar">
+          <div class="brandLeft">
+            <div class="logoBox" title="Company Logo">
+              <img id="logoImg" class="logoImg" src="logo.png" alt="Company logo"
+                   onerror="this.onerror=null; this.src='logo.jpg';" />
+            </div>
+
+            <div class="brandText">
+              <div class="brandName" id="companyName">Company</div>
+              <div class="brandTag" id="companyTag">Tagline</div>
+            </div>
+          </div>
+
+          <div class="chipRow">
+            <div class="chip glow" id="chipMain">eCard</div>
+            <div class="chip" id="chipSub">Scan-ready</div>
+          </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="hero">
+          <div class="avatarRing">
+            <div class="avatarWrap">
+              <img class="avatar" src="profile.jpg" alt="Profile photo"
+                   onerror="this.style.display='none'; this.parentElement.style.background='rgba(0,0,0,.18)';" />
+            </div>
+          </div>
+
+          <div class="who">
+            <h1 class="name" id="fullName">Your Name</h1>
+            <div class="role" id="title">Title</div>
+            <div class="pulseLine" aria-hidden="true"></div>
+          </div>
+        </section>
       </div>
-
-      <div class="brandText">
-        <div class="brandName" id="companyName">Company</div>
-        <div class="brandTag" id="companyTag">Tagline</div>
-      </div>
-    </div>
-
-    <div class="chipRow">
-      <div class="chip glow" id="chipMain">eCard</div>
-      <div class="chip" id="chipSub">Scan-ready</div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <section class="hero">
-    <div class="avatarRing">
-      <div class="avatarWrap">
-        <img class="avatar" src="profile.jpg" alt="Profile photo"
-             onerror="this.style.display='none'; this.parentElement.style.background='rgba(0,0,0,.18)';" />
-      </div>
-    </div>
-
-    <div class="who">
-      <h1 class="name" id="fullName">Your Name</h1>
-      <div class="role" id="title">Title</div>
-      <div class="pulseLine" aria-hidden="true"></div>
-    </div>
-  </section>
-</div>
 
       <section class="info">
         <button class="tileBtn" id="phoneTile" type="button" aria-label="Call or text">
@@ -741,10 +734,9 @@ body[data-tier="elite"] .wm{
         </a>
 
         <a class="btn elite" id="eliteCtaBtn" href="#" target="_blank" rel="noopener" aria-label="Elite call-to-action">
-  <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.7 4.1L18 21l-6-4-6 4 1.7-7.9L2 9h7l3-7z"/></svg>
-  <span id="eliteCtaLabel">Elite Bonus</span>
-</a>
-        <!-- Elite-only CTA is injected here by JS when tier=elite -->
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.7 4.1L18 21l-6-4-6 4 1.7-7.9L2 9h7l3-7z"/></svg>
+          <span id="eliteCtaLabel">Elite Bonus</span>
+        </a>
 
         <a class="btn primary" id="callBtn" href="#" aria-label="Call">
           <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
@@ -841,7 +833,7 @@ body[data-tier="elite"] .wm{
     eliteCtaUrl: "https://selectsourcewater.com/elite-bonus"
   };
 </script>
-  
+
 <script>
   (function () {
     const box = document.createElement("div");
@@ -870,7 +862,7 @@ body[data-tier="elite"] .wm{
     });
   })();
 </script>
-  
+
   <script src="shared/config.js"></script>
   <script src="shared/shared.js"></script>
 </body>
