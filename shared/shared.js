@@ -19,19 +19,19 @@
   };
 
   const disableEl = (el) => {
-  if (!el) return;
+    if (!el) return;
 
-  el.setAttribute("aria-disabled", "true");
-  el.style.opacity = "0.45";
-  el.style.pointerEvents = "none";
+    el.setAttribute("aria-disabled", "true");
+    el.style.opacity = "0.45";
+    el.style.pointerEvents = "none";
 
-  // safer than javascript:void(0) on mobile webviews
-  if (el.tagName === "A") {
-    el.setAttribute("href", "#");
-    el.removeAttribute("target");
-    el.removeAttribute("rel");
-  }
-};
+    // safer than javascript:void(0) on mobile webviews
+    if (el.tagName === "A") {
+      el.setAttribute("href", "#");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+    }
+  };
 
   const enableHref = (id, href) => {
     const el = $(id);
@@ -63,21 +63,6 @@
     const msg = isPlaceholder(body) ? "" : String(body || "");
     if (!msg) return `sms:${num}`;
 
-    // ---------- themes ----------
-  const THEMES = new Set(["aqua", "mint", "midnight", "graphite", "ember", "royal"]);
-
-  const applyTheme = () => {
-    const tier = getTier();
-    const requested = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
-
-    // Starter ALWAYS defaults to aqua
-    const theme = (tier === "starter")
-      ? "aqua"
-      : (THEMES.has(requested) ? requested : "aqua");
-
-    document.documentElement.setAttribute("data-theme", theme);
-  };
-
     const ua = navigator.userAgent || "";
     const isiOS = /iPhone|iPad|iPod/i.test(ua);
     const sep = isiOS ? "&" : "?";
@@ -94,6 +79,21 @@
   const getTier = () => {
     const t = (window.BIZ?.tier || "starter").toString().toLowerCase();
     return t === "pro" || t === "elite" ? t : "starter";
+  };
+
+  // ---------- themes ----------
+  const THEMES = new Set(["aqua", "mint", "midnight", "graphite", "ember", "royal"]);
+
+  const applyTheme = () => {
+    const tier = getTier();
+    const requested = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
+
+    // Starter ALWAYS defaults to aqua
+    const theme = (tier === "starter")
+      ? "aqua"
+      : (THEMES.has(requested) ? requested : "aqua");
+
+    document.documentElement.setAttribute("data-theme", theme);
   };
 
   // ---------- UI apply ----------
@@ -180,7 +180,6 @@
 
     // booking
     const booking = normUrl(B.bookingLink);
-    // if booking feature is off (not in your matrix, but safe), hide/disable
     if (!f.booking) {
       const bookBtn = $("bookBtn");
       if (bookBtn) bookBtn.style.display = "none";
@@ -188,15 +187,13 @@
       enableHref("bookBtn", booking);
     }
 
-    // ---------- Elite CTA (ONLY ONE PLACE) ----------
+    // ---------- Elite CTA ----------
     const eliteBtn = $("eliteCtaBtn");
     const eliteLabelEl = $("eliteCtaLabel");
 
-    // Label
     const label = isPlaceholder(B.eliteCtaLabel) ? "" : String(B.eliteCtaLabel).trim();
     if (eliteLabelEl) eliteLabelEl.textContent = label || "Elite Bonus";
 
-    // URL + enable/disable (only matters on elite tier; pro hides it anyway)
     const eliteUrl = normUrl(B.eliteCtaUrl);
 
     if (eliteBtn) {
@@ -204,7 +201,6 @@
         eliteBtn.style.display = "none";
       } else {
         if (!eliteUrl) {
-          // If elite but missing URL, hide it (so it never looks “dead”)
           eliteBtn.style.display = "none";
           disableEl(eliteBtn);
         } else {
@@ -214,7 +210,7 @@
       }
     }
 
-    // Phone tile click fallback (optional)
+    // Phone tile click fallback
     const phoneTile = $("phoneTile");
     if (phoneTile) {
       if (telHref) {
@@ -303,7 +299,7 @@
   }
 
   window.addEventListener("hashchange", () => {
-    aaplyTheme();
+    applyTheme();
     applyTierUI();
     applyCardData();
   });
