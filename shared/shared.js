@@ -19,13 +19,19 @@
   };
 
   const disableEl = (el) => {
-    if (!el) return;
-    el.setAttribute("aria-disabled", "true");
-    el.style.opacity = "0.45";
-    el.style.pointerEvents = "none";
-    // keep href from jumping to top
-    if (el.tagName === "A") el.setAttribute("href", "javascript:void(0)");
-  };
+  if (!el) return;
+
+  el.setAttribute("aria-disabled", "true");
+  el.style.opacity = "0.45";
+  el.style.pointerEvents = "none";
+
+  // safer than javascript:void(0) on mobile webviews
+  if (el.tagName === "A") {
+    el.setAttribute("href", "#");
+    el.removeAttribute("target");
+    el.removeAttribute("rel");
+  }
+};
 
   const enableHref = (id, href) => {
     const el = $(id);
