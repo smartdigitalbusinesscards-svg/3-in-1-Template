@@ -2,28 +2,33 @@
 (() => {
   window.BIZ = window.BIZ || {};
 
-  // 1) default tier if nothing else provided
+  // Default tier if nothing else provided
   if (!window.BIZ.tier) window.BIZ.tier = "starter";
 
-  // 2) allow URL tier via:
-  //    ?tier=elite   (preferred)
-  //    #tier=elite   (also supported)
-  //    #?tier=elite  (supported too)
+  const normalizeTier = (t) => {
+    t = (t || "").toString().trim().toLowerCase();
+    return (t === "starter" || t === "pro" || t === "elite") ? t : null;
+  };
+
   const pickTierFromUrl = () => {
-    const fromSearch = new URLSearchParams(window.location.search).get("tier");
+    // Preferred: ?tier=elite
+    const qsTier = normalizeTier(
+      new URLSearchParams(window.location.search).get("tier")
+    );
 
-    const hash = (window.location.hash || "").replace(/^#/, "");
-    const hashClean = hash.startsWith("?") ? hash.slice(1) : hash;
-    const fromHash = new URLSearchParams(hashClean).get("tier") || (hash.includes("tier=") ? null : hash);
+    // Hash support:
+    // #tier=elite
+    // #?tier=elite
+    const rawHash = (window.location.hash || "").replace(/^#/, "");
+    const hashQuery = rawHash.startsWith("?") ? rawHash.slice(1) : rawHash;
+    const hashTier = normalizeTier(
+      new URLSearchParams(hashQuery).get("tier")
+    );
 
-    const tier = (fromSearch || fromHash || "").toString().trim().toLowerCase();
-    if (tier === "starter" || tier === "pro" || tier === "elite") {
-      window.BIZ.tier = tier;
-    }
+    const tier = qsTier || hashTier;
+    if (tier) window.BIZ.tier = tier;
   };
 
   pickTierFromUrl();
-
-  // If user changes only the hash later, still update tier
   window.addEventListener("hashchange", pickTierFromUrl);
 })();
