@@ -862,33 +862,41 @@ html[data-theme="royal"]{
      CUSTOMER CONFIG (edit per customer)
      ============================================================ -->
 <script>
-  // IMPORTANT:
-  // Put ALL customer values here so shared/shared.js can wire buttons correctly.
-  // Tier can still be overridden by URL (?tier=starter|pro|elite) via shared/config.js
-
   window.BIZ = {
-    tier: "starter", // default tier (URL can override)
-    theme: "aqua", // pro/elite: "aqua" | "mint" | "midnight" | "graphite" | "ember" | "royal"  (starter forced to aqua)
-    
+    // ---- Tier + Theme ----
+    // NOTE: tier can still be overridden by URL (?tier=starter|pro|elite)
+    tier: "starter",                 // "starter" | "pro" | "elite"
+    theme: "aqua",                   // "aqua" | "mint" | "midnight" | "graphite" | "ember" | "royal"
+                                    // (starter is forced to aqua by shared.js)
+
+    // ---- Identity ----
     fullName: "REPLACE_FULL_NAME",
     company: "REPLACE_COMPANY",
     tagline: "REPLACE_TAGLINE",
     title: "REPLACE_TITLE",
 
-    phonePretty: "REPLACE_PHONE_PRETTY",
-    phoneTel: "2095551234", // digits only, like 2095551234
-
-    email: "you@domain.com",
-    website: "https://example.com", // include https://
-
-    bookingLink: "https://calendly.com/yourlink", // include https:// (or leave "" if not used)
-
+    // ---- Phone ----
+    phonePretty: "REPLACE_PHONE_PRETTY", // (209) 555-1234
+    phoneTel: "REPLACE_PHONE_TEL",       // digits only: 2095551234
     textPrefill: "REPLACE_TEXT_PREFILL",
 
-    eliteCtaLabel: "Free Water Quality Guide",
-    eliteCtaUrl: "https://selectsourcewater.com/elite-bonus"
+    // ---- Core Links ----
+    email: "REPLACE_EMAIL",
+    website: "REPLACE_WEBSITE",          // include https://
+    bookingLink: "REPLACE_BOOKING_LINK", // include https:// or ""
+
+    // ---- Elite Bonus CTA (Elite only shows) ----
+    eliteCtaLabel: "REPLACE_ELITE_CTA_LABEL",
+    eliteCtaUrl: "REPLACE_ELITE_CTA_URL", // include https:// or ""
+
+    // ---- Socials (Elite only; button hidden if none provided) ----
+    instagram: "REPLACE_INSTAGRAM", // handle, @handle, or full url
+    tiktok: "REPLACE_TIKTOK",
+    facebook: "REPLACE_FACEBOOK",
+    linkedin: "REPLACE_LINKEDIN",
+    youtube: "REPLACE_YOUTUBE",
+    twitter: "REPLACE_TWITTER"
   };
-</script>
 
 <script>
   (function () {
