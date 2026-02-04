@@ -13,6 +13,21 @@
     return "https://" + s.replace(/^\/+/, "");
   };
 
+const normSocial = (u) => {
+    if (isPlaceholder(u)) return "";
+    const s = String(u).trim();
+    if (!s) return "";
+
+    // allow @handle shorthand
+    if (s.startsWith("@")) return s.slice(1);
+
+    // if user pasted a full URL, keep it
+    if (/^https?:\/\//i.test(s)) return s;
+
+    // otherwise treat as handle/username
+    return s;
+  };
+  
   const setText = (id, value) => {
     const el = $(id);
     if (el) el.textContent = isPlaceholder(value) ? "" : String(value);
@@ -283,6 +298,91 @@
     });
   };
 
+// ---------- Socials (Elite) ----------
+  const buildSocialLinks = () => {
+    const B = window.BIZ || {};
+
+    // You can decide later if Pro gets socials too.
+    // For now: Elite only.
+    const tier = getTier();
+    if (tier !== "elite") return [];
+
+    const links = [];
+
+    const add = (label, urlOrHandle, buildUrlFn) => {
+      const v = normSocial(urlOrHandle);
+      if (!v) return;
+
+      const href = /^https?:\/\//i.test(v) ? v : buildUrlFn(v);
+      links.push({ label, href });
+    };
+
+    add("Instagram", B.instagram, (h) => `https://instagram.com/${h}`);
+    add("TikTok",     B.tiktok,    (h) => `https://tiktok.com/@${h}`);
+    add("Facebook",   B.facebook,  (h) => `https://facebook.com/${h}`);
+    add("LinkedIn",   B.linkedin,  (h) => `https://www.linkedin.com/in/${h}`);
+    add("YouTube",    B.youtube,   (h) => `https://youtube.com/@${h}`);
+    add("X / Twitter",B.twitter,   (h) => `https://x.com/${h}`);
+
+    return links;
+  };
+
+  const showSocials = () => {
+    const body = sheetBody();
+    if (!body) return;
+
+    const links = buildSocialLinks();
+
+    // If none provided, just show a small note (and don't look broken)
+    if (!links.length) {
+      body.innerHTML = `
+        <div style="padding:10px 4px; color: rgba(236,246,255,.78);">
+          No social links were added for this card.
+        </div>
+      `;
+      openSheet();
+      return;
+    }
+
+    body.innerHTML = `
+      ${links.map((l) => `
+        <a class="sheetBtn" href="${l.href}" target="_blank" rel="noopener">
+          ${l.label}
+        </a>
+      `).join("")}
+    `;
+
+    openSheet();
+  };
+
+  const wireSocials = () => {
+    const btn = $("socialsBtn");
+    if (!btn) return;
+
+    const tier = getTier();
+
+    // Elite only (for now)
+    if (tier !== "elite") {
+      btn.style.display = "none";
+      disableEl(btn);
+      return;
+    }
+
+    // Show button only if at least one social exists
+    const hasAny = buildSocialLinks().length > 0;
+    if (!hasAny) {
+      btn.style.display = "none";
+      disableEl(btn);
+      return;
+    }
+
+    btn.style.display = "";
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSocials();
+    });
+  };
+  
   // ---------- init ----------
   const init = () => {
     applyTheme();
@@ -290,6 +390,7 @@
     applyTierUI();
     wireSheet();
     wireQR();
+    wireSocials();
   };
 
   if (document.readyState === "loading") {
@@ -302,5 +403,6 @@
     applyTheme();
     applyTierUI();
     applyCardData();
+    wireSocials();
   });
 })();
