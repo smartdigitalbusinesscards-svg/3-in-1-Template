@@ -34,19 +34,18 @@ const normSocial = (u) => {
   };
 
   const disableEl = (el) => {
-    if (!el) return;
+  if (!el) return;
 
-    el.setAttribute("aria-disabled", "true");
-    el.style.opacity = "0.45";
-    el.style.pointerEvents = "none";
+  el.setAttribute("aria-disabled", "true");
+  // el.style.opacity = "0.45";       // ✅ REMOVE THIS LINE
+  el.style.pointerEvents = "none";
 
-    // safer than javascript:void(0) on mobile webviews
-    if (el.tagName === "A") {
-      el.setAttribute("href", "#");
-      el.removeAttribute("target");
-      el.removeAttribute("rel");
-    }
-  };
+  if (el.tagName === "A") {
+    el.setAttribute("href", "#");
+    el.removeAttribute("target");
+    el.removeAttribute("rel");
+  }
+};
 
   const enableHref = (id, href) => {
     const el = $(id);
