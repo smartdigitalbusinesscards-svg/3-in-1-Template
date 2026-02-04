@@ -35,6 +35,30 @@
   *{ box-sizing:border-box; }
   html,body{ height:100%; }
 
+/* =========================================================
+   THEME SYSTEM
+   - Starter ALWAYS uses Aqua (enforced in shared.js)
+   - Pro/Elite can set: window.BIZ.theme = "mint" | "midnight"
+   ========================================================= */
+
+/* Default theme = AQUA (your current :root values already are Aqua) */
+
+/* MINT */
+html[data-theme="mint"]{
+  --bgA:#071f16;
+  --bgB:#0c3a28;
+  --aqua:#63ffb2;
+  --mint:#9bffd5;
+}
+
+/* MIDNIGHT */
+html[data-theme="midnight"]{
+  --bgA:#040611;
+  --bgB:#0a0f2a;
+  --aqua:#6a7cff;
+  --mint:#9fb0ff;
+}
+  
   body{
     margin:0;
     font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -813,6 +837,7 @@
 
   window.BIZ = {
     tier: "starter", // default tier (URL can override)
+    theme: "aqua", // pro/elite: "aqua" | "mint" | "midnight"  (starter forced to aqua)
 
     fullName: "REPLACE_FULL_NAME",
     company: "REPLACE_COMPANY",
