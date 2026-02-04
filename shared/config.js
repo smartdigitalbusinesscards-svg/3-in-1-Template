@@ -1,8 +1,9 @@
-// shared/config.js
 (() => {
   window.BIZ = window.BIZ || {};
 
-  // Default tier if nothing else provided
+  // ✅ TEMP TEST: force one real link so buttons should activate
+  window.BIZ.bookingLink = "https://example.com";
+
   if (!window.BIZ.tier) window.BIZ.tier = "starter";
 
   const normalizeTier = (t) => {
@@ -11,20 +12,10 @@
   };
 
   const pickTierFromUrl = () => {
-    // Preferred: ?tier=elite
-    const qsTier = normalizeTier(
-      new URLSearchParams(window.location.search).get("tier")
-    );
-
-    // Hash support:
-    // #tier=elite
-    // #?tier=elite
+    const qsTier = normalizeTier(new URLSearchParams(window.location.search).get("tier"));
     const rawHash = (window.location.hash || "").replace(/^#/, "");
     const hashQuery = rawHash.startsWith("?") ? rawHash.slice(1) : rawHash;
-    const hashTier = normalizeTier(
-      new URLSearchParams(hashQuery).get("tier")
-    );
-
+    const hashTier = normalizeTier(new URLSearchParams(hashQuery).get("tier"));
     const tier = qsTier || hashTier;
     if (tier) window.BIZ.tier = tier;
   };
