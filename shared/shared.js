@@ -303,6 +303,7 @@
   }
 
   window.addEventListener("hashchange", () => {
+    aaplyTheme();
     applyTierUI();
     applyCardData();
   });
