@@ -64,7 +64,7 @@
     if (!msg) return `sms:${num}`;
 
     // ---------- themes ----------
-  const THEMES = new Set(["aqua", "mint", "midnight"]);
+  const THEMES = new Set(["aqua", "mint", "midnight", "graphite", "ember", "royal"]);
 
   const applyTheme = () => {
     const tier = getTier();
