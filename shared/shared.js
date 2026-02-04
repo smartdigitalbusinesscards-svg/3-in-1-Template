@@ -63,6 +63,21 @@
     const msg = isPlaceholder(body) ? "" : String(body || "");
     if (!msg) return `sms:${num}`;
 
+    // ---------- themes ----------
+  const THEMES = new Set(["aqua", "mint", "midnight"]);
+
+  const applyTheme = () => {
+    const tier = getTier();
+    const requested = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
+
+    // Starter ALWAYS defaults to aqua
+    const theme = (tier === "starter")
+      ? "aqua"
+      : (THEMES.has(requested) ? requested : "aqua");
+
+    document.documentElement.setAttribute("data-theme", theme);
+  };
+
     const ua = navigator.userAgent || "";
     const isiOS = /iPhone|iPad|iPod/i.test(ua);
     const sep = isiOS ? "&" : "?";
@@ -274,6 +289,7 @@
 
   // ---------- init ----------
   const init = () => {
+    applyTheme();
     applyCardData();
     applyTierUI();
     wireSheet();
