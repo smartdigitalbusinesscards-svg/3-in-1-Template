@@ -460,8 +460,8 @@ if (!bookBtn || !f.booking || !secondaryUrl) {
   // ---------- init ----------
   const init = () => {
     applyTheme();
-    applyCardData();
     applyTierUI();
+    applyCardData();
     wireSheet();
     wireQR();
     wireSocials();
