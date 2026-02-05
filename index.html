@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-  <base href="./">
+<base href="./">
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#04151f" />
 <title>Smart Digital eCard</title>
@@ -20,8 +20,14 @@
     --text:#ecf6ff;
     --muted: rgba(236,246,255,.74);
 
+    /* Theme driver colors */
     --aqua:#4fe3ff;
     --mint:#63ffb2;
+
+    /* Theme-driven glows (requested) */
+    --glowA: color-mix(in srgb, var(--aqua) 18%, transparent);
+    --glowB: color-mix(in srgb, var(--mint) 14%, transparent);
+    --glowSoft: color-mix(in srgb, white 6%, transparent);
 
     --shadow: 0 22px 70px rgba(0,0,0,.55);
     --radius: 22px;
@@ -35,70 +41,70 @@
   *{ box-sizing:border-box; }
   html,body{ height:100%; }
 
-/* =========================================================
-   THEME SYSTEM
-   - Starter ALWAYS uses Aqua (enforced in shared.js)
-   - Pro/Elite can set: window.BIZ.theme = "mint" | "midnight"
-   ========================================================= */
+  /* =========================================================
+     THEME SYSTEM
+     - Starter ALWAYS uses Aqua (enforced in shared.js)
+     - Pro/Elite can set: window.BIZ.theme
+     ========================================================= */
 
-/* Default theme = AQUA (your current :root values already are Aqua) */
+  /* MINT */
+  html[data-theme="mint"]{
+    --bgA:#071f16;
+    --bgB:#0c3a28;
+    --aqua:#63ffb2;
+    --mint:#9bffd5;
+  }
 
-/* MINT */
-html[data-theme="mint"]{
-  --bgA:#071f16;
-  --bgB:#0c3a28;
-  --aqua:#63ffb2;
-  --mint:#9bffd5;
-}
+  /* MIDNIGHT */
+  html[data-theme="midnight"]{
+    --bgA:#040611;
+    --bgB:#0a0f2a;
+    --aqua:#6a7cff;
+    --mint:#9fb0ff;
+  }
 
-/* MIDNIGHT */
-html[data-theme="midnight"]{
-  --bgA:#040611;
-  --bgB:#0a0f2a;
-  --aqua:#6a7cff;
-  --mint:#9fb0ff;
-}
+  /* GRAPHITE */
+  html[data-theme="graphite"]{
+    --bgA:#0a0f14;
+    --bgB:#141b24;
+    --aqua:#4fe3ff;
+    --mint:#63ffb2;
+  }
 
-/* GRAPHITE (clean neutral dark, still glows aqua/mint) */
-html[data-theme="graphite"]{
-  --bgA:#0a0f14;
-  --bgB:#141b24;
-  --aqua:#4fe3ff;
-  --mint:#63ffb2;
-}
+  /* EMBER */
+  html[data-theme="ember"]{
+    --bgA:#1a0707;
+    --bgB:#3a0f0f;
+    --aqua:#ff6b6b;
+    --mint:#ffb36b;
+  }
 
-/* EMBER (dark red/orange glow — still premium) */
-html[data-theme="ember"]{
-  --bgA:#1a0707;
-  --bgB:#3a0f0f;
-  --aqua:#ff6b6b;
-  --mint:#ffb36b;
-}
+  /* ROYAL */
+  html[data-theme="royal"]{
+    --bgA:#0b0618;
+    --bgB:#1b0f3a;
+    --aqua:#9a6bff;
+    --mint:#58d7ff;
+  }
 
-/* ROYAL (deep purple/blue luxury) */
-html[data-theme="royal"]{
-  --bgA:#0b0618;
-  --bgB:#1b0f3a;
-  --aqua:#9a6bff;
-  --mint:#58d7ff;
-}
+  /* PINK / ELEGANT PINK (supports multiple tokens) */
+  html[data-theme="pink"],
+  html[data-theme="elegantpink"],
+  html[data-theme="elegant-pink"]{
+    --bgA:#14060f;
+    --bgB:#2b0b1f;
+    --aqua:#ff4fd8;
+    --mint:#ff9bf0;
+  }
 
-/* PINK (clean neon pink / magenta glow) */
-html[data-theme="pink"]{
-  --bgA:#160610;
-  --bgB:#3a0f2a;
-  --aqua:#ff4fd8;
-  --mint:#ff9bf0;
-}
-  
   body{
     margin:0;
     font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     color:var(--text);
     background:
-      radial-gradient(900px 520px at 10% 8%, rgba(79,227,255,.18), transparent 58%),
-      radial-gradient(860px 520px at 92% 38%, rgba(99,255,178,.12), transparent 58%),
-      radial-gradient(720px 520px at 45% 105%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(900px 520px at 10% 8%, var(--glowA), transparent 58%),
+      radial-gradient(860px 520px at 92% 38%, var(--glowB), transparent 58%),
+      radial-gradient(720px 520px at 45% 105%, var(--glowSoft), transparent 60%),
       linear-gradient(160deg, var(--bgA), var(--bgB));
     overflow-x:hidden;
   }
@@ -106,9 +112,9 @@ html[data-theme="pink"]{
   .waterGlow{
     position:fixed; inset:-80px;
     background:
-      radial-gradient(1200px 640px at 15% 20%, rgba(79,227,255,.11), transparent 60%),
-      radial-gradient(1000px 620px at 85% 55%, rgba(99,255,178,.085), transparent 60%),
-      radial-gradient(700px 460px at 50% 95%, rgba(255,255,255,.05), transparent 65%);
+      radial-gradient(1200px 640px at 15% 20%, color-mix(in srgb, var(--aqua) 12%, transparent), transparent 60%),
+      radial-gradient(1000px 620px at 85% 55%, color-mix(in srgb, var(--mint) 9%, transparent), transparent 60%),
+      radial-gradient(700px 460px at 50% 95%, var(--glowSoft), transparent 65%);
     filter: blur(18px);
     animation: drift 12s ease-in-out infinite alternate;
     pointer-events:none;
@@ -148,11 +154,11 @@ html[data-theme="pink"]{
     border-radius: calc(var(--radius) + 2px);
     background:
       conic-gradient(from 180deg,
-        rgba(79,227,255,.0),
-        rgba(79,227,255,.35),
-        rgba(99,255,178,.28),
+        transparent,
+        color-mix(in srgb, var(--aqua) 40%, transparent),
+        color-mix(in srgb, var(--mint) 32%, transparent),
         rgba(255,255,255,.10),
-        rgba(79,227,255,.0)
+        transparent
       );
     filter: blur(10px);
     opacity:.65;
@@ -168,17 +174,9 @@ html[data-theme="pink"]{
   }
 
   /* =========================================================
-     ✅ Brand Watermark (CLEAN + SCOPED)
-     - One watermark system only
-     - Visible for ALL tiers (starter/pro/elite)
-     - Sits behind topZone content only
+     Brand Watermark
      ========================================================= */
-
-  .topZone{
-    position:relative;
-    overflow:hidden;
-  }
-
+  .topZone{ position:relative; overflow:hidden; }
   .topZone .wm{
     position:absolute;
     inset:0;
@@ -187,9 +185,8 @@ html[data-theme="pink"]{
     display:flex;
     align-items:center;
     justify-content:center;
-    opacity:.16; /* tweak if needed */
+    opacity:.16;
   }
-
   .topZone .wm img{
     width: 120%;
     max-width: none;
@@ -198,11 +195,7 @@ html[data-theme="pink"]{
     transform: rotate(0deg) translateY(10px);
     filter: brightness(1.12) contrast(1.08) grayscale(100%);
   }
-
-  .topZone > *:not(.wm){
-    position:relative;
-    z-index:1;
-  }
+  .topZone > *:not(.wm){ position:relative; z-index:1; }
 
   /* Brand bar */
   .brandBar{
@@ -236,8 +229,8 @@ html[data-theme="pink"]{
     inset:-35%;
     background:
       radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%),
-      radial-gradient(circle at 70% 70%, rgba(79,227,255,.20), transparent 55%),
-      radial-gradient(circle at 35% 80%, rgba(99,255,178,.16), transparent 60%);
+      radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--aqua) 22%, transparent), transparent 55%),
+      radial-gradient(circle at 35% 80%, color-mix(in srgb, var(--mint) 18%, transparent), transparent 60%);
     filter: blur(8px);
     opacity:.9;
     pointer-events:none;
@@ -291,12 +284,18 @@ html[data-theme="pink"]{
   }
   .chip.glow{
     border: 1px solid rgba(255,255,255,.18);
-    background: linear-gradient(90deg, rgba(79,227,255,.22), rgba(99,255,178,.16));
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--aqua) 22%, transparent),
+      color-mix(in srgb, var(--mint) 16%, transparent)
+    );
     color: rgba(236,246,255,.92);
   }
   .chip.elite{
     border: 1px solid rgba(255,255,255,.22);
-    background: linear-gradient(90deg, rgba(99,255,178,.24), rgba(79,227,255,.22));
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--mint) 24%, transparent),
+      color-mix(in srgb, var(--aqua) 22%, transparent)
+    );
     color: rgba(236,246,255,.95);
     position:relative;
     overflow:hidden;
@@ -329,7 +328,10 @@ html[data-theme="pink"]{
     height: 104px;
     border-radius: 50%;
     padding: 2px;
-    background: linear-gradient(135deg, rgba(79,227,255,.85), rgba(99,255,178,.65));
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--aqua) 85%, white 15%),
+      color-mix(in srgb, var(--mint) 70%, white 30%)
+    );
     box-shadow: 0 18px 55px rgba(0,0,0,.45);
     flex: 0 0 auto;
   }
@@ -382,11 +384,11 @@ html[data-theme="pink"]{
     border-radius: 999px;
     background:
       linear-gradient(90deg,
-        rgba(79,227,255,0),
-        rgba(79,227,255,.85),
-        rgba(99,255,178,.70),
+        transparent,
+        color-mix(in srgb, var(--aqua) 85%, transparent),
+        color-mix(in srgb, var(--mint) 70%, transparent),
         rgba(255,255,255,.20),
-        rgba(79,227,255,0)
+        transparent
       );
     opacity:.85;
     position:relative;
@@ -439,7 +441,7 @@ html[data-theme="pink"]{
     height: 38px;
     border-radius: 14px;
     border: 1px solid rgba(255,255,255,.16);
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), rgba(79,227,255,.14));
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), color-mix(in srgb, var(--aqua) 14%, transparent));
     display:grid;
     place-items:center;
     flex: 0 0 auto;
@@ -503,24 +505,24 @@ html[data-theme="pink"]{
   .btn:active{ transform: translateY(0px) scale(.995); }
 
   .btn.primary{
-  border:none;
-  color:#031019;
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--aqua) 92%, white 8%),
-    color-mix(in srgb, var(--mint) 88%, white 12%)
-  );
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--aqua) 18%, transparent);
-}
+    border:none;
+    color:#031019;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--aqua) 92%, white 8%),
+      color-mix(in srgb, var(--mint) 88%, white 12%)
+    );
+    box-shadow: 0 16px 40px color-mix(in srgb, var(--aqua) 18%, transparent);
+  }
   .btn.main{
-  grid-column: 1 / -1;
-  border:none;
-  color:#031019;
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--mint) 92%, white 8%),
-    color-mix(in srgb, var(--aqua) 88%, white 12%)
-  );
-  box-shadow: 0 18px 44px color-mix(in srgb, var(--mint) 16%, transparent);
-}
+    grid-column: 1 / -1;
+    border:none;
+    color:#031019;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--mint) 92%, white 8%),
+      color-mix(in srgb, var(--aqua) 88%, white 12%)
+    );
+    box-shadow: 0 18px 44px color-mix(in srgb, var(--mint) 16%, transparent);
+  }
   .btn.save{
     grid-column: 1 / -1;
     background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.14));
@@ -528,18 +530,18 @@ html[data-theme="pink"]{
 
   /* Elite CTA */
   .btn.elite{
-  grid-column: 1 / -1;
-  border:none;
-  color:#04151f;
-  background: linear-gradient(90deg,
-    rgba(255,255,255,.20),
-    color-mix(in srgb, var(--aqua) 90%, white 10%),
-    color-mix(in srgb, var(--mint) 86%, white 14%)
-  );
-  box-shadow: 0 22px 60px rgba(255,255,255,.08);
-  position:relative;
-  overflow:hidden;
-}
+    grid-column: 1 / -1;
+    border:none;
+    color:#04151f;
+    background: linear-gradient(90deg,
+      rgba(255,255,255,.20),
+      color-mix(in srgb, var(--aqua) 90%, white 10%),
+      color-mix(in srgb, var(--mint) 86%, white 14%)
+    );
+    box-shadow: 0 22px 60px rgba(255,255,255,.08);
+    position:relative;
+    overflow:hidden;
+  }
   .btn.elite::after{
     content:"";
     position:absolute;
@@ -692,7 +694,10 @@ html[data-theme="pink"]{
   .sheetBtn.primary{
     border:none;
     color:#031019;
-    background: linear-gradient(90deg, rgba(79,227,255,.95), rgba(99,255,178,.85));
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--aqua) 92%, white 8%),
+      color-mix(in srgb, var(--mint) 88%, white 12%)
+    );
   }
   .sheetBtn svg{ width:18px; height:18px; fill: currentColor; }
 
@@ -784,7 +789,7 @@ html[data-theme="pink"]{
 
         <div class="tile">
           <div class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm6.9 9h-2.2c-.1-2-.7-3.9-1.7-5.4 1.9 1 3.3 3 3.9 5.4zM12 4.1c1.3 1.6 2.1 3.9 2.2 6H9.8c.1-2.1.9-4.4 2.2-6zM4.1 13h2.2c.1 2 .7 3.9 1.7 5.4-1.9-1-3.3-3-3.9-5.4zM6.3 11H4.1c.6-2.4 2-4.4 3.9-5.4-1 1.5-1.6 3.4-1.7 5.4zM12 19.9c-1.3-1.6-2.1-3.9-2.2-6h4.4c-.1 2.1-.9 4.4-2.2 6zm3.9-1.5c1-1.5 1.6-3.4 1.7-5.4h2.2c-.6 2.4-2-4.4-3.9-5.4z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm6.9 9h-2.2c-.1-2-.7-3.9-1.7-5.4 1.9 1 3.3 3 3.9 5.4zM12 4.1c1.3 1.6 2.1 3.9 2.2 6H9.8c.1-2.1.9-4.4 2.2-6zM4.1 13h2.2c.6 2.4 2 4.4 3.9 5.4-1-1.5-1.6-3.4-1.7-5.4zM6.3 11H4.1c.6-2.4 2-4.4 3.9-5.4-1 1.5-1.6 3.4-1.7 5.4zM12 19.9c-1.3-1.6-2.1-3.9-2.2-6h4.4c-.1 2.1-.9 4.4-2.2 6zm3.9-1.5c1-1.5 1.6-3.4 1.7-5.4h2.2c-.6 2.4-2 4.4-3.9 5.4z"/></svg>
           </div>
           <div class="tileText">
             <div class="label">Website</div>
@@ -805,11 +810,11 @@ html[data-theme="pink"]{
         </a>
 
         <a class="btn" id="socialsBtn" href="#" aria-label="Social links">
-  <svg viewBox="0 0 24 24">
-    <path d="M16 8a6 6 0 0 0-12 0c0 7 8 12 12 12s12-5 12-12a6 6 0 0 0-6-6c-2 0-4 1-5 3-1-2-3-3-5-3zm-6 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
-  </svg>
-  Socials
-</a>
+          <svg viewBox="0 0 24 24">
+            <path d="M16 8a6 6 0 0 0-12 0c0 7 8 12 12 12s12-5 12-12a6 6 0 0 0-6-6c-2 0-4 1-5 3-1-2-3-3-5-3zm-6 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+          </svg>
+          Socials
+        </a>
 
         <a class="btn primary" id="callBtn" href="#" aria-label="Call">
           <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.7 3.1 3.5 4.9 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.9.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.1 21 3 13.9 3 5c0-.6.4-1 1-1h3.3c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.9.1.4 0 .8-.3 1.1L6.6 10.8z"/></svg>
@@ -880,66 +885,67 @@ html[data-theme="pink"]{
      CUSTOMER CONFIG (edit per customer)
      ============================================================ -->
 
-<!-- BIZ_START -->
-<script>
-  window.BIZ = {
-    tier: "starter",
-    theme: "aqua",
+  <!-- BIZ_START -->
+  <script>
+    window.BIZ = {
+      tier: "starter",
+      theme: "aqua",
 
-    fullName: "Test User",
-    company: "Test Company",
-    tagline: "Test Tagline",
-    title: "Test Title",
+      fullName: "Test User",
+      company: "Test Company",
+      tagline: "Test Tagline",
+      title: "Test Title",
 
-    phonePretty: "(555) 555-5555",
-    phoneTel: "+15555555555",
-    textPrefill: "Hey! Quick question:",
+      phonePretty: "(555) 555-5555",
+      phoneTel: "15555555555",
+      textPrefill: "Hey! Quick question:",
 
-    email: "test@example.com",
-    website: "https://example.com",
-    bookingLink: "https://example.com",
+      email: "test@example.com",
+      website: "https://example.com",
+      bookingLink: "https://example.com",
 
-    eliteCtaLabel: "Elite Bonus",
-    eliteCtaUrl: "https://example.com",
+      eliteCtaLabel: "Elite Bonus",
+      eliteCtaUrl: "https://example.com",
 
-    instagram: "https://instagram.com",
-    tiktok: "https://tiktok.com",
-    facebook: "https://facebook.com",
-    linkedin: "https://linkedin.com",
-    youtube: "https://youtube.com",
-    twitter: "https://x.com"
-  };
-</script>
-<!-- BIZ_END -->
+      instagram: "",
+      tiktok: "",
+      facebook: "",
+      linkedin: "",
+      youtube: "",
+      twitter: ""
+    };
+  </script>
+  <!-- BIZ_END -->
 
-<script>
-  (function () {
-    const box = document.createElement("div");
-    box.id = "debugErrors";
-    box.style.cssText = `
-      position:fixed; left:10px; right:10px; bottom:10px; z-index:99999;
-      background:rgba(140,0,0,.92); color:#fff; padding:10px 12px; border-radius:12px;
-      font:12px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      box-shadow:0 20px 60px rgba(0,0,0,.6);
-      display:none; white-space:pre-wrap; word-break:break-word;
-    `;
-    document.addEventListener("DOMContentLoaded", () => document.body.appendChild(box));
+  <!-- Optional: simple error box for debugging (safe in production, just hidden unless errors happen) -->
+  <script>
+    (function () {
+      const box = document.createElement("div");
+      box.id = "debugErrors";
+      box.style.cssText = `
+        position:fixed; left:10px; right:10px; bottom:10px; z-index:99999;
+        background:rgba(140,0,0,.92); color:#fff; padding:10px 12px; border-radius:12px;
+        font:12px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        box-shadow:0 20px 60px rgba(0,0,0,.6);
+        display:none; white-space:pre-wrap; word-break:break-word;
+      `;
+      document.addEventListener("DOMContentLoaded", () => document.body.appendChild(box));
 
-    function show(msg){
-      box.style.display = "block";
-      box.textContent = "JS ERROR:\n" + msg;
-    }
+      function show(msg){
+        box.style.display = "block";
+        box.textContent = "JS ERROR:\n" + msg;
+      }
 
-    window.addEventListener("error", (e) => {
-      const msg = `${e.message}\n${e.filename || ""}:${e.lineno || ""}:${e.colno || ""}`;
-      show(msg);
-    });
+      window.addEventListener("error", (e) => {
+        const msg = `${e.message}\n${e.filename || ""}:${e.lineno || ""}:${e.colno || ""}`;
+        show(msg);
+      });
 
-    window.addEventListener("unhandledrejection", (e) => {
-      show(String(e.reason || e));
-    });
-  })();
-</script>
+      window.addEventListener("unhandledrejection", (e) => {
+        show(String(e.reason || e));
+      });
+    })();
+  </script>
 
   <script src="shared/config.js"></script>
   <script src="shared/shared.js"></script>
