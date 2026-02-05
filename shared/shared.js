@@ -96,18 +96,30 @@ const normSocial = (u) => {
   };
 
   // ---------- themes ----------
-  const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink","elegantpink","elegant-pink"]);
-  const applyTheme = () => {
-    const tier = getTier();
-    const requested = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
+const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
 
-    // Starter ALWAYS defaults to aqua
-    const theme = (tier === "starter")
-      ? "aqua"
-      : (THEMES.has(requested) ? requested : "aqua");
+const THEME_ALIASES = {
+  "elegant pink": "pink",
+  "elegantpink": "pink",
+  "elegant-pink": "pink",
+  "pink": "pink",
+};
 
-    document.documentElement.setAttribute("data-theme", theme);
-  };
+const applyTheme = () => {
+  const tier = getTier();
+  const raw = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
+
+  // Starter ALWAYS defaults to aqua
+  if (tier === "starter") {
+    document.documentElement.setAttribute("data-theme", "aqua");
+    return;
+  }
+
+  const mapped = THEME_ALIASES[raw] || raw;
+  const theme = THEMES.has(mapped) ? mapped : "aqua";
+
+  document.documentElement.setAttribute("data-theme", theme);
+};
 
   // ---------- UI apply ----------
   const applyTierUI = () => {
