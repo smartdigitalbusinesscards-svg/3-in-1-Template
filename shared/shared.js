@@ -224,18 +224,27 @@
       }
     }
 
-    // booking (ONLY if bookingLink exists; also hides if it’s the same as Elite CTA to avoid duplicates)
-    const booking = normUrl(B.bookingLink);
-    const bookBtn = $("bookBtn");
+    // ---------- Secondary CTA (uses the existing #bookBtn) ----------
+const secondaryLabel = isPlaceholder(B.secondaryCtaLabel) ? "" : String(B.secondaryCtaLabel).trim();
+const secondaryUrl   = normUrl(B.secondaryCtaUrl);
+const bookBtn        = $("bookBtn");
 
-    if (!bookBtn || !f.booking || !booking) {
-      if (bookBtn) bookBtn.style.display = "none";
-    } else if (tier === "elite" && eliteUrl && booking === eliteUrl) {
-      bookBtn.style.display = "none";
-    } else {
-      bookBtn.style.display = "";
-      enableHref("bookBtn", booking);
-    }
+if (!bookBtn || !f.booking || !secondaryUrl) {
+  if (bookBtn) bookBtn.style.display = "none";
+} else {
+  // Set the big button label
+  // (targets the text node inside #bookBtn by replacing its last text content)
+  const labelText = secondaryLabel || "Learn More";
+  const labelContainer = bookBtn.querySelector(".btnLabel") || bookBtn;
+
+  // If you haven't added a span yet, we'll do a safe fallback:
+  // if a .btnLabel span exists, use it; otherwise keep current text.
+  const span = bookBtn.querySelector(".btnLabel");
+  if (span) span.textContent = labelText;
+
+  bookBtn.style.display = "";
+  enableHref("bookBtn", secondaryUrl);
+}
 
     // Phone tile click fallback
     const phoneTile = $("phoneTile");
