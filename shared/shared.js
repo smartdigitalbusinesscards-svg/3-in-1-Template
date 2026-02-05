@@ -94,7 +94,19 @@
   };
 
   // ---------- themes ----------
-  const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
+  const THEMES = new Set([
+  "aqua",
+  "mint",
+  "midnight",
+  "purple",
+  "graphite",
+  "ember",
+  "royal",
+  "cool-green",
+  "ice",
+  "neon-blue",
+  "pink"
+]);
 
   // normalize to keys like "elegant-pink"
   const THEME_ALIASES = {
@@ -102,6 +114,11 @@
     "elegantpink": "pink",
     "elegant pink": "pink",
     "pink": "pink",
+    "ice": "ice",
+    "neon blue": "neon-blue",
+    "neonblue": "neon-blue",
+    "neon-blue": "neon-blue",
+    "electric blue": "neon-blue",
   };
 
   const applyTheme = () => {
