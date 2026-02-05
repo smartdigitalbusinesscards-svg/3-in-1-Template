@@ -395,6 +395,68 @@ if (!bookBtn || !f.booking || !secondaryUrl) {
     });
   };
 
+  // ---------- Save Contact (VCF) ----------
+  const escapeVcf = (s) =>
+    String(s || "")
+      .replace(/\\/g, "\\\\")
+      .replace(/\n/g, "\\n")
+      .replace(/,/g, "\\,")
+      .replace(/;/g, "\\;");
+
+  const buildVcf = () => {
+    const B = window.BIZ || {};
+    const fn = escapeVcf(B.fullName);
+    const org = escapeVcf(B.company);
+    const title = escapeVcf(B.title);
+
+    const telDigits = String(B.phoneTel || "").replace(/[^\d]/g, "");
+    const telValue = telDigits ? `+${telDigits}` : "";
+
+    const email = (B.email && String(B.email).trim()) || "";
+    const url = normUrl(B.website);
+
+    const lines = [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
+      fn ? `FN:${fn}` : "",
+      org ? `ORG:${org}` : "",
+      title ? `TITLE:${title}` : "",
+      telValue ? `TEL;TYPE=CELL:${telValue}` : "",
+      email ? `EMAIL;TYPE=INTERNET:${escapeVcf(email)}` : "",
+      url ? `URL:${escapeVcf(url)}` : "",
+      "END:VCARD"
+    ].filter(Boolean);
+
+    return lines.join("\n");
+  };
+
+  const downloadVcf = () => {
+    const vcf = buildVcf();
+    if (!vcf) return;
+
+    const name = (window.BIZ?.fullName || "contact").toString().trim() || "contact";
+    const safeName = name.replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-") || "contact";
+    const filename = `${safeName}.vcf`;
+
+    const blob = new Blob([vcf], { type: "text/vcard;charset=utf-8" });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 800);
+  };
+
+  const wireSaveContact = () => {
+    const btn = $("saveContactBtn");
+    if (!btn) return;
+    btn.addEventListener("click", downloadVcf);
+  };
+
   // ---------- init ----------
   const init = () => {
     applyTheme();
