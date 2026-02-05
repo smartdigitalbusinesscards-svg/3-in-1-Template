@@ -107,13 +107,20 @@ const THEME_ALIASES = {
 
 const applyTheme = () => {
   const tier = getTier();
+
+  // normalize:
+  // "Elegant Pink" -> "elegant-pink"
+  // "ElegantPink"  -> "elegantpink"
   const raw = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
+  const requested = raw.replace(/\s+/g, "-");
 
   // Starter ALWAYS defaults to aqua
-  if (tier === "starter") {
-    document.documentElement.setAttribute("data-theme", "aqua");
-    return;
-  }
+  const theme = (tier === "starter")
+    ? "aqua"
+    : (THEMES.has(requested) ? requested : "aqua");
+
+  document.documentElement.setAttribute("data-theme", theme);
+};
 
   const mapped = THEME_ALIASES[raw] || raw;
   const theme = THEMES.has(mapped) ? mapped : "aqua";
