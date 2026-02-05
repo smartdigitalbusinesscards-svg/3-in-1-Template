@@ -403,6 +403,7 @@ if (!bookBtn || !f.booking || !secondaryUrl) {
     wireSheet();
     wireQR();
     wireSocials();
+    wireSaveContact();
   };
 
   if (document.readyState === "loading") {
