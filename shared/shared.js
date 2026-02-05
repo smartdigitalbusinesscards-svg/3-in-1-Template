@@ -13,7 +13,7 @@
     return "https://" + s.replace(/^\/+/, "");
   };
 
-const normSocial = (u) => {
+  const normSocial = (u) => {
     if (isPlaceholder(u)) return "";
     const s = String(u).trim();
     if (!s) return "";
@@ -27,25 +27,24 @@ const normSocial = (u) => {
     // otherwise treat as handle/username
     return s;
   };
-  
+
   const setText = (id, value) => {
     const el = $(id);
     if (el) el.textContent = isPlaceholder(value) ? "" : String(value);
   };
 
   const disableEl = (el) => {
-  if (!el) return;
+    if (!el) return;
 
-  el.setAttribute("aria-disabled", "true");
-  // el.style.opacity = "0.45";       // ✅ REMOVE THIS LINE
-  el.style.pointerEvents = "none";
+    el.setAttribute("aria-disabled", "true");
+    el.style.pointerEvents = "none";
 
-  if (el.tagName === "A") {
-    el.setAttribute("href", "#");
-    el.removeAttribute("target");
-    el.removeAttribute("rel");
-  }
-};
+    if (el.tagName === "A") {
+      el.setAttribute("href", "#");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+    }
+  };
 
   const enableHref = (id, href) => {
     const el = $(id);
@@ -61,7 +60,6 @@ const normSocial = (u) => {
     el.style.pointerEvents = "";
     el.setAttribute("href", href);
 
-    // If it's a web link, open in new tab safely
     if (/^https?:\/\//i.test(href)) {
       el.setAttribute("target", "_blank");
       el.setAttribute("rel", "noopener");
@@ -96,37 +94,36 @@ const normSocial = (u) => {
   };
 
   // ---------- themes ----------
-const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
+  const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
 
-const THEME_ALIASES = {
-  "elegant pink": "pink",
-  "elegantpink": "pink",
-  "elegant-pink": "pink",
-  "pink": "pink",
-};
+  // normalize to keys like "elegant-pink"
+  const THEME_ALIASES = {
+    "elegant-pink": "pink",
+    "elegantpink": "pink",
+    "elegant pink": "pink",
+    "pink": "pink",
+  };
 
-const applyTheme = () => {
-  const tier = getTier();
+  const applyTheme = () => {
+    const tier = getTier();
 
-  // normalize:
-  // "Elegant Pink" -> "elegant-pink"
-  // "ElegantPink"  -> "elegantpink"
-  const raw = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
-  const requested = raw.replace(/\s+/g, "-");
+    const raw = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
 
-  // Starter ALWAYS defaults to aqua
-  const theme = (tier === "starter")
-    ? "aqua"
-    : (THEMES.has(requested) ? requested : "aqua");
+    // keep BOTH versions so ElegantPink and Elegant Pink both work
+    const normalizedDash = raw.replace(/\s+/g, "-");  // "elegant pink" -> "elegant-pink"
+    const normalizedNone = raw.replace(/\s+/g, "");  // "elegant pink" -> "elegantpink"
 
-  document.documentElement.setAttribute("data-theme", theme);
-};
+    const mapped =
+      THEME_ALIASES[normalizedDash] ||
+      THEME_ALIASES[normalizedNone] ||
+      THEME_ALIASES[raw] ||
+      normalizedDash;
 
-  const mapped = THEME_ALIASES[raw] || raw;
-  const theme = THEMES.has(mapped) ? mapped : "aqua";
+    // Starter ALWAYS aqua
+    const theme = (tier === "starter") ? "aqua" : (THEMES.has(mapped) ? mapped : "aqua");
 
-  document.documentElement.setAttribute("data-theme", theme);
-};
+    document.documentElement.setAttribute("data-theme", theme);
+  };
 
   // ---------- UI apply ----------
   const applyTierUI = () => {
@@ -143,13 +140,11 @@ const applyTheme = () => {
 
     if (tierBadge) tierBadge.textContent = tier.toUpperCase();
 
-    // QR row visibility
     const hint = $("qrHint");
     const row  = $("utilityRow");
     if (hint) hint.style.display = f.qr ? "block" : "none";
     if (row)  row.style.display  = f.qr ? "flex"  : "none";
 
-    // Elite CTA visibility (tier-based)
     const eliteBtn = $("eliteCtaBtn");
     if (eliteBtn) eliteBtn.style.display = f.eliteCTA ? "" : "none";
   };
@@ -210,36 +205,36 @@ const applyTheme = () => {
       }
     }
 
-    // booking
-    const booking = normUrl(B.bookingLink);
-    if (!f.booking) {
-      const bookBtn = $("bookBtn");
-      if (bookBtn) bookBtn.style.display = "none";
-    } else {
-      enableHref("bookBtn", booking);
-    }
-
     // ---------- Elite CTA ----------
     const eliteBtn = $("eliteCtaBtn");
     const eliteLabelEl = $("eliteCtaLabel");
 
-    const label = isPlaceholder(B.eliteCtaLabel) ? "" : String(B.eliteCtaLabel).trim();
-    if (eliteLabelEl) eliteLabelEl.textContent = label || "Elite Bonus";
+    const eliteLabel = isPlaceholder(B.eliteCtaLabel) ? "" : String(B.eliteCtaLabel).trim();
+    if (eliteLabelEl) eliteLabelEl.textContent = eliteLabel || "Elite Bonus";
 
     const eliteUrl = normUrl(B.eliteCtaUrl);
 
     if (eliteBtn) {
-      if (!f.eliteCTA) {
+      if (!f.eliteCTA || !eliteUrl) {
         eliteBtn.style.display = "none";
+        disableEl(eliteBtn);
       } else {
-        if (!eliteUrl) {
-          eliteBtn.style.display = "none";
-          disableEl(eliteBtn);
-        } else {
-          eliteBtn.style.display = "";
-          enableHref("eliteCtaBtn", eliteUrl);
-        }
+        eliteBtn.style.display = "";
+        enableHref("eliteCtaBtn", eliteUrl);
       }
+    }
+
+    // booking (ONLY if bookingLink exists; also hides if it’s the same as Elite CTA to avoid duplicates)
+    const booking = normUrl(B.bookingLink);
+    const bookBtn = $("bookBtn");
+
+    if (!bookBtn || !f.booking || !booking) {
+      if (bookBtn) bookBtn.style.display = "none";
+    } else if (tier === "elite" && eliteUrl && booking === eliteUrl) {
+      bookBtn.style.display = "none";
+    } else {
+      bookBtn.style.display = "";
+      enableHref("bookBtn", booking);
     }
 
     // Phone tile click fallback
@@ -275,7 +270,7 @@ const applyTheme = () => {
     overlay()?.addEventListener("click", closeSheet);
   };
 
-  // ---------- QR (qrserver image) ----------
+  // ---------- QR ----------
   const qrImageUrl = () => {
     const url = window.location.href.split("#")[0];
     const data = encodeURIComponent(url);
@@ -315,26 +310,21 @@ const applyTheme = () => {
     });
   };
 
-// ---------- Socials (Elite) ----------
+  // ---------- Socials (Elite) ----------
   const buildSocialLinks = () => {
     const B = window.BIZ || {};
-
-    // You can decide later if Pro gets socials too.
-    // For now: Elite only.
     const tier = getTier();
     if (tier !== "elite") return [];
 
     const links = [];
-
     const add = (label, urlOrHandle, buildUrlFn) => {
       const v = normSocial(urlOrHandle);
       if (!v) return;
-
       const href = /^https?:\/\//i.test(v) ? v : buildUrlFn(v);
       links.push({ label, href });
     };
 
-    add("Instagram", B.instagram, (h) => `https://instagram.com/${h}`);
+    add("Instagram",  B.instagram, (h) => `https://instagram.com/${h}`);
     add("TikTok",     B.tiktok,    (h) => `https://tiktok.com/@${h}`);
     add("Facebook",   B.facebook,  (h) => `https://facebook.com/${h}`);
     add("LinkedIn",   B.linkedin,  (h) => `https://www.linkedin.com/in/${h}`);
@@ -350,7 +340,6 @@ const applyTheme = () => {
 
     const links = buildSocialLinks();
 
-    // If none provided, just show a small note (and don't look broken)
     if (!links.length) {
       body.innerHTML = `
         <div style="padding:10px 4px; color: rgba(236,246,255,.78);">
@@ -377,15 +366,12 @@ const applyTheme = () => {
     if (!btn) return;
 
     const tier = getTier();
-
-    // Elite only (for now)
     if (tier !== "elite") {
       btn.style.display = "none";
       disableEl(btn);
       return;
     }
 
-    // Show button only if at least one social exists
     const hasAny = buildSocialLinks().length > 0;
     if (!hasAny) {
       btn.style.display = "none";
@@ -399,7 +385,7 @@ const applyTheme = () => {
       showSocials();
     });
   };
-  
+
   // ---------- init ----------
   const init = () => {
     applyTheme();
