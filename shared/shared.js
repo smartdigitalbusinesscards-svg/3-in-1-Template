@@ -96,8 +96,7 @@ const normSocial = (u) => {
   };
 
   // ---------- themes ----------
-  const THEMES = new Set(["aqua", "mint", "midnight", "graphite", "ember", "royal"]);
-
+  const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
   const applyTheme = () => {
     const tier = getTier();
     const requested = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
