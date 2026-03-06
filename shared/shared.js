@@ -105,21 +105,28 @@
   "cool-green",
   "ice",
   "neon-blue",
-  "pink"
+  "pink",
+  "amber-gold"
 ]);
 
-  // normalize to keys like "elegant-pink"
-  const THEME_ALIASES = {
-    "elegant-pink": "pink",
-    "elegantpink": "pink",
-    "elegant pink": "pink",
-    "pink": "pink",
-    "ice": "ice",
-    "neon blue": "neon-blue",
-    "neonblue": "neon-blue",
-    "neon-blue": "neon-blue",
-    "electric blue": "neon-blue",
-  };
+const THEME_ALIASES = {
+  "elegant-pink": "pink",
+  "elegantpink": "pink",
+  "elegant pink": "pink",
+  "pink": "pink",
+  "ice": "ice",
+  "neon blue": "neon-blue",
+  "neonblue": "neon-blue",
+  "neon-blue": "neon-blue",
+  "electric blue": "neon-blue",
+  "amber": "amber-gold",
+  "gold": "amber-gold",
+  "golden": "amber-gold",
+  "amber-gold": "amber-gold",
+  "amber gold": "amber-gold",
+  "champagne": "amber-gold",
+  "sunburst": "amber-gold"
+};
 
   const applyTheme = () => {
     const tier = getTier();
